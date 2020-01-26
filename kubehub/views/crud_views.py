@@ -47,7 +47,7 @@ def cloud_provider_edit(request):
         try:
             data = json.loads(request.body)
             pk = data.pop('id')
-            instance = CloudProvider.objects.get(pk="pk")
+            instance = CloudProvider.objects.get(pk=pk)
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 

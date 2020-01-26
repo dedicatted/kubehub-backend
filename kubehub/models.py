@@ -1,11 +1,16 @@
 from django.db import models
 
 class CloudProvider(models.Model):
-    cp_type = models.CharField(max_length=20)
+    CP_TYPES = (
+        ('PROX_MOX', 'PROX_MOX'),
+        ('AWS', 'AWS'),
+        ('GCP', 'GCP')
+    )
+    cp_type = models.CharField(max_length=20, choices=CP_TYPES)
     name = models.CharField(max_length=50)
     api_endpoint = models.CharField(max_length=50)
     password = models.CharField(max_length=20)
 
 
     def __str__(self):
-        return f'id: {self.id} name: {self.name} api_endpoint: {self.api_endpoint} password: {self.password}'
+        return f'id: {self.id}, name: {self.name}, api_endpoint: {self.api_endpoint}, password: {self.password}'
