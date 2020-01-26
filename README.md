@@ -33,7 +33,6 @@ python manage.py runserver
 #### Examples of curl request for CRUD api
 
 List of cloud providers request to `/api/cloud_providers/list`:
-
 ```
 curl --request GET http://localhost:8000/api/cloud_providers/list
 ```
