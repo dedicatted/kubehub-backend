@@ -13,7 +13,7 @@ class CloudProviderSerializer(serializers.ModelSerializer):
         return cloud_probider
 
 
-    def update(self, instance,validated_data):
+    def update(self, instance, validated_data):
         instance.cp_type = validated_data.get('cp_type', instance.cp_type)
         instance.name = validated_data.get('name', instance.name)
         instance.api_endpoint = validated_data.get('api_endpoint', instance.api_endpoint)
