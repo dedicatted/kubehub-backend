@@ -1,7 +1,7 @@
 from django.conf.urls import url
-from . import views
+from . views import kubespray_deploy
 
 
 urlpatterns = [
-    url(r'^run/ansible$', views.run_ansible_script, name='run_ansible_script'),
+    url(r'^run/ansible$', kubespray_deploy.kubespray_deploy, name='run_ansible_script'),
 ]

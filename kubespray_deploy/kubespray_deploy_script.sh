@@ -1,12 +1,12 @@
 #!/bin/bash
-host=$1
+virtual_machine_ip=$1
 git clone https://github.com/kubernetes-sigs/kubespray.git
 cd kubespray
 sudo pip install -r requirements.txt
 # Copy ``inventory/sample`` as ``inventory/mycluster``
 cp -rfp inventory/sample inventory/mycluster
 # Update Ansible inventory file with inventory builder
-declare -a IPS=($host)
+declare -a IPS=($virtual_machine_ip)
 CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
 # Review and change parameters under ``inventory/mycluster/group_vars``
 #cat inventory/mycluster/group_vars/all/all.yml
@@ -15,4 +15,4 @@ CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inv
 # The option `--become` is required, as for example writing SSL keys in /etc/,
 # installing packages and interacting with various systemd daemons.
 # Without --become the playbook will fail to run!
-ansible-playbook -e ansible_ssh_port=2205 -u ubuntu -i inventory/mycluster/hosts.yaml --become --become-user=root cluster.yml
+ansible-playbook  -i inventory/mycluster/hosts.yaml --user=ubuntu --become --become-user=root cluster.yml
