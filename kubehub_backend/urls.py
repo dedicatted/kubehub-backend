@@ -20,6 +20,6 @@ from django.conf.urls import include, url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'api/cloud_providers/', include('kubehub.urls'))
+    url(r'api/cloud_providers/', include('kubehub.urls')),
     url(r'', include('kubehub.urls')),
 ]
