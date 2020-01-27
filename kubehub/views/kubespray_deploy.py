@@ -9,7 +9,7 @@ def kubespray_deploy(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            cmd = ["./kubespray_deploy/kubespray_deploy_script.sh", data["virtual_machine_ip"]]
+            cmd = ["./scripts/cluster_create.sh", data["virtual_machine_ip"]]
             output = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
         except Exception as e:
             return JsonResponse(e.args, safe=False)
