@@ -3,5 +3,5 @@ from . views import kubespray_deploy
 
 
 urlpatterns = [
-    url(r'^run/ansible$', kubespray_deploy.kubespray_deploy, name='run_ansible_script'),
+    url(r'^cluster/create/$', kubespray_deploy.kubespray_deploy, name='cluster_create'),
 ]
