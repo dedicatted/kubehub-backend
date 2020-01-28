@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from .views import crud_views
-from . views import kubespray_deploy
+from .views import kubespray_deploy
 
 
 urlpatterns = [

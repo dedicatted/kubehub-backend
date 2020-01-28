@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . models import CloudProvider
+from ..models.CloudProvider import CloudProvider
 
 
 class CloudProviderSerializer(serializers.ModelSerializer):
@@ -7,11 +7,9 @@ class CloudProviderSerializer(serializers.ModelSerializer):
         model = CloudProvider
         fields = ('id', 'cp_type', 'name', 'api_endpoint', 'password')
 
-
     def create(self, validated_data):
-        cloud_probider = CloudProvider.objects.create(**validated_data)
-        return cloud_probider
-
+        cloud_provider = CloudProvider.objects.create(**validated_data)
+        return cloud_provider
 
     def update(self, instance, validated_data):
         instance.cp_type = validated_data.get('cp_type', instance.cp_type)
