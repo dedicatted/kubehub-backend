@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from .views import crud_views
-from . views import kubespray_deploy
+from .views import kubespray_deploy
+from .proxmox import NodesList
 
 
 urlpatterns = [
@@ -9,6 +10,7 @@ urlpatterns = [
     url(r'^remove$', crud_views.cloud_provider_remove, name='cloud_provider_remove'),
     url(r'^edit$', crud_views.cloud_provider_edit, name='cloud_provider_edit'),
     url(r'^cluster/create/$', kubespray_deploy.kubespray_deploy, name='cluster_create'),
+    url(r'^nodes/list$', NodesList.node_list, name='proxmox_nodes_list'),
 ]
 
 
