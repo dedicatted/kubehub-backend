@@ -4,8 +4,8 @@ from django.forms.models import model_to_dict
 
 import json
 
-from kubehub.models.CloudProvider import CloudProvider
-from kubehub.serializers.CloudProviderSerializer import CloudProviderSerializer
+from kubehub.models.cloud_provider import CloudProvider
+from kubehub.serializers.cloud_provider_serializer import CloudProviderSerializer
 
 
 @csrf_exempt

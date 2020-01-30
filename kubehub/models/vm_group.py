@@ -2,7 +2,7 @@ from django.db import models
 import subprocess
 
 
-class VmGroups(models.Model):
+class VMGroup(models.Model):
     name_max = int(subprocess.check_output("getconf NAME_MAX /", shell=True))
     vm_group_name = models.CharField(max_length=name_max)
     vm_ip = models.CharField(max_length=name_max)

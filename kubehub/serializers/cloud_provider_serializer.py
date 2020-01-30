@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models.CloudProvider import CloudProvider
+from ..models.cloud_provider import CloudProvider
 
 
 class CloudProviderSerializer(serializers.ModelSerializer):

@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .views import crud_views
 from .views import kubespray_deploy
-from .views import VmCrudView
+from .views import vm_group_crud_view
 
 
 urlpatterns = [
@@ -10,10 +10,10 @@ urlpatterns = [
     url(r'^remove$', crud_views.cloud_provider_remove, name='cloud_provider_remove'),
     url(r'^edit$', crud_views.cloud_provider_edit, name='cloud_provider_edit'),
     url(r'^cluster/create/$', kubespray_deploy.kubespray_deploy, name='cluster_create'),
-    url(r'^VM/group/list$', VmCrudView.vm_groups_list, name='virtual_machines_group_list'),
-    url(r'^VM/group/add$', VmCrudView.vm_group_add, name='virtual_machines_group_add'),
-    url(r'^VM/group/remove$', VmCrudView.vm_group_remove, name='virtual_machines_group_remove'),
-    url(r'^VM/group/edit$', VmCrudView.vm_group_edit, name='virtual_machines_group_edit'),
+    url(r'^vm/group/list$', vm_group_crud_view.vm_group_list, name='virtual_machines_group_list'),
+    url(r'^vm/group/add$', vm_group_crud_view.vm_group_add, name='virtual_machines_group_add'),
+    url(r'^vm/group/remove$', vm_group_crud_view.vm_group_remove, name='virtual_machines_group_remove'),
+    url(r'^vm/group/edit$', vm_group_crud_view.vm_group_edit, name='virtual_machines_group_edit')
 ]
 
 
