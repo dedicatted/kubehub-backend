@@ -4,6 +4,7 @@ from .views import kubespray_deploy
 from .proxmox import NodeList
 from .proxmox import VmList
 from .proxmox import VmDelete
+from .proxmox import vm_clone
 
 
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
     url(r'^nodes/list$', NodeList.node_list, name='proxmox_nodes_list'),
     url(r'^vm/list$', VmList.vm_list, name='proxmox_vm_list'),
     url(r'^vm/delete$', VmDelete.vm_delete, name='proxmox_vm_delete'),
+    url(r'^vm/clone$', vm_clone.vm_clone, name='proxmox_vm_clone')
 ]
 
 
