@@ -5,6 +5,7 @@ from .proxmox import nodes_list
 from .proxmox import vm_list
 from .proxmox import vm_delete
 from .proxmox import vm_clone
+from .proxmox import get_vm_ip
 
 
 urlpatterns = [
@@ -16,7 +17,8 @@ urlpatterns = [
     url(r'^nodes/list$', nodes_list.nodes_list, name='proxmox_nodes_list'),
     url(r'^vm/list$', vm_list.vm_list, name='proxmox_vm_list'),
     url(r'^vm/delete$', vm_delete.vm_delete, name='proxmox_vm_delete'),
-    url(r'^vm/clone$', vm_clone.vm_clone, name='proxmox_vm_clone')
+    url(r'^vm/clone$', vm_clone.vm_clone, name='proxmox_vm_clone'),
+    url(r'^vm/get_ip$', get_vm_ip.vm_ip, name='proxmox_get_vm_ip')
 ]
 
 
