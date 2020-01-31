@@ -7,7 +7,6 @@ from .proxmox import vm_delete
 from .proxmox import vm_clone
 from .proxmox import get_vm_ip
 from .proxmox import vm_start
-from .views import kubespray_deploy
 from .views import vm_group_crud_view
 
 
