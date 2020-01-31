@@ -3,7 +3,7 @@ from django.db import models
 
 class CloudProvider(models.Model):
     CP_TYPES = (
-        ('PROXMOX', 'PROXMOX'),
+        ('Proxmox', 'Proxmox'),
         ('AWS', 'AWS'),
         ('GCP', 'GCP')
     )
