@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cloudprovider',
             name='cp_type',
-            field=models.CharField(choices=[('PROX_MOX', 'PROX_MOX'), ('AWS', 'AWS'), ('GCP', 'GCP')], max_length=20),
+            field=models.CharField(choices=[('PROXMOX', 'PROXMOX'), ('AWS', 'AWS'), ('GCP', 'GCP')], max_length=20),
         ),
     ]
