@@ -1,12 +1,11 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 
 import json
 
-from kubehub.models import CloudProvider
-from kubehub.serializers import CloudProviderSerializer
+from kubehub.models.cloud_provider import CloudProvider
+from kubehub.serializers.cloud_provider_serializer import CloudProviderSerializer
 
 
 @csrf_exempt

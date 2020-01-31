@@ -7,6 +7,9 @@ from .proxmox import vm_delete
 from .proxmox import vm_clone
 from .proxmox import get_vm_ip
 from .proxmox import vm_start
+from .views import kubespray_deploy
+from .views import vm_group_crud_view
+
 
 urlpatterns = [
     url(r'^list$', crud_views.cloud_provider_list, name='cloud_provider_list'),
@@ -19,7 +22,11 @@ urlpatterns = [
     url(r'^vm/delete$', vm_delete.vm_delete, name='proxmox_vm_delete'),
     url(r'^vm/clone$', vm_clone.vm_clone, name='proxmox_vm_clone'),
     url(r'^vm/get_ip$', get_vm_ip.vm_ip, name='proxmox_get_vm_ip'),
-    url(r'^vm/start$', vm_start.vm_start, name='proxmox_vm_start')
+    url(r'^vm/start$', vm_start.vm_start, name='proxmox_vm_start'),
+    url(r'^vm/group/list$', vm_group_crud_view.vm_group_list, name='virtual_machines_group_list'),
+    url(r'^vm/group/add$', vm_group_crud_view.vm_group_add, name='virtual_machines_group_add'),
+    url(r'^vm/group/remove$', vm_group_crud_view.vm_group_remove, name='virtual_machines_group_remove'),
+    url(r'^vm/group/edit$', vm_group_crud_view.vm_group_edit, name='virtual_machines_group_edit')
 ]
 
 
