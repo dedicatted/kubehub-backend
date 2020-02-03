@@ -5,7 +5,7 @@ import json
 
 
 @csrf_exempt
-def nodes_list(request):
+def node_list(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
