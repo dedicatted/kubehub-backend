@@ -6,10 +6,12 @@ from proxmoxer import ProxmoxAPI
 import time
 import json
 import random
+from ..models.cloud_provider import CloudProvider
 
 
 def create_cluster_node(data):
-    proxmox = ProxmoxAPI(host=data["proxmox_ip"], user='root@pam', password=data["password"], verify_ssl=False)
+    instance = CloudProvider.objects.get(pk=data['id'])
+    proxmox = ProxmoxAPI(host=instance.api_endpoint, user='root@pam', password=instance.password, verify_ssl=False)
     template = proxmox.nodes('pve-01').qemu('1222')
     newid = random.randint(245, 3333)
     clone = template.clone.create(newid=newid, full='1', name=data["name"])
@@ -22,7 +24,7 @@ def create_cluster_node(data):
         vm_status = proxmox.nodes(data["node"]).qemu(newid).status('current').get()
         status = vm_status.get("status")
         if status == "running":
-            time.sleep(25)
+            time.sleep(40)
             agent = proxmox.nodes(data["node"]).qemu(newid).agent('network-get-interfaces').get()
             ip = agent.get("result")[1].get("ip-addresses")[0].get("ip-address")
             return ip
