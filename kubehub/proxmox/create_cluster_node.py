@@ -1,34 +1,24 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from proxmoxer import ProxmoxAPI
-import json
 import time
 import random
 
-@csrf_exempt
-def create_cluster_node(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            proxmox = ProxmoxAPI(host=data["proxmox_ip"], user='root@pam', password=data["password"], verify_ssl=False)
-            template = proxmox.nodes(data["node"]).qemu(data["vmid"])
-            newid = random.randint(100, 200)
-            clone = template.clone.create(newid=newid, full=data["full"], name=data["name"])
-            while not clone:
-                clone = template.clone.create(newid=newid, full=data["full"], name=data["name"])
-            if clone:
-                time.sleep(240)
-                start_vm = proxmox.nodes(data["node"]).qemu(newid).status().start().post()
-                if start_vm:
-                    vm_status = proxmox.nodes(data["node"]).qemu(newid).status('current').get()
-                    status = vm_status.get("status")
-                    while status == "stopped":
-                        vm_status = proxmox.nodes(data["node"]).qemu(newid).status('current').get()
-                        status = vm_status.get("status")
-                    if status == "running":
-                        time.sleep(20)
-                        agent = proxmox.nodes(data["node"]).qemu(newid).agent('network-get-interfaces').get()
-                        ip = agent.get("result")[1].get("ip-addresses")[0].get("ip-address")
-                        return JsonResponse(ip, safe=False)
-        except Exception as e:
-            return JsonResponse(e.args, safe=False)
+from ..models.cloud_provider import CloudProvider
+from ..proxmox.vm_clone import vm_clone
+from ..proxmox.vm_start import vm_start
+from ..proxmox.vm_status import vm_status
+from ..proxmox.get_vm_ip import get_vm_ip
+
+
+def create_cluster_node(data):
+    instance = CloudProvider.objects.get(pk=data['id'])
+    newid = random.randint(245, 3333)
+    vm_clone(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid='1222', newid=newid, name=data["name"])
+    vm_start(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid=newid)
+    status = vm_status(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid=newid)
+    while status != "running":
+        time.sleep(25)
+        vm_start(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid=newid)
+        status = vm_status(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid=newid)
+        if status == "running":
+            time.sleep(40)
+            ip = get_vm_ip(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid=newid)
+            return ip
