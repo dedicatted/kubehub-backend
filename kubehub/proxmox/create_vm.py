@@ -10,8 +10,8 @@ from ..proxmox.get_vm_ip import get_vm_ip
 
 def create_vm(data):
     instance = CloudProvider.objects.get(pk=data['cloud_provider_id'])
-    newid = random.randint(100, 9999)
-    vm_clone(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid='1222', newid=newid, name=data["name"])
+    newid = random.randint(100, 200)
+    vm_clone(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid=data["template_id"], newid=newid, name=data["name"])
     vm_start(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid=newid)
     status = vm_status(proxmox_ip=instance.api_endpoint, password=instance.password, node=data["node"], vmid=newid)
     while status != "running":
