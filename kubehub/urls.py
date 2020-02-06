@@ -5,7 +5,6 @@ from .views import vm_group_crud_view
 from .proxmox import node_list
 from .proxmox import vm_list
 from .proxmox import vm_delete
-from .proxmox import get_vm_ip
 from .proxmox import create_cluster_node
 from .proxmox import vm_manager_status
 from .proxmox import create_vm_cluster
@@ -21,7 +20,6 @@ urlpatterns = [
     url(r'^nodes/list$', node_list.node_list, name='proxmox_nodes_list'),
     url(r'^vm/list$', vm_list.vm_list, name='proxmox_vm_list'),
     url(r'^vm/delete$', vm_delete.vm_delete, name='proxmox_vm_delete'),
-    url(r'^vm/get_ip$', get_vm_ip.vm_ip, name='proxmox_get_vm_ip'),
 
     url(r'^vm/group/list$', vm_group_crud_view.vm_group_list, name='virtual_machines_group_list'),
     url(r'^vm/group/add$', vm_group_crud_view.vm_group_add, name='virtual_machines_group_add'),
