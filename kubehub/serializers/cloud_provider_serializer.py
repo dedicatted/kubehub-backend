@@ -5,7 +5,7 @@ from ..models.cloud_provider import CloudProvider
 class CloudProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = CloudProvider
-        fields = ('id', 'cp_type', 'name', 'api_endpoint', 'password')
+        fields = ('cloud_provider_id', 'cp_type', 'name', 'api_endpoint', 'password')
 
     def create(self, validated_data):
         cloud_provider = CloudProvider.objects.create(**validated_data)
