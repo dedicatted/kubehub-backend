@@ -13,4 +13,4 @@ class CloudProvider(models.Model):
     password = models.CharField(max_length=20)
 
     def __str__(self):
-        return f'id: {self.id}, name: {self.name}, api_endpoint: {self.api_endpoint}, password: {self.password}'
+        return f'cloud_provider_id: {self.id}, name: {self.name}, api_endpoint: {self.api_endpoint}, password: {self.password}'
