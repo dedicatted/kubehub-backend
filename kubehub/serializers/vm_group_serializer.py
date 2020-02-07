@@ -13,6 +13,6 @@ class VMGroupSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.vm_group_name = validated_data.get('vm_group_name', instance.vm_group_name)
-        instance.vm_ip = validated_data.get('vm_ip', instance.vm_ip)
+        # instance.vm_ip = validated_data.get('vm_ip', instance.vm_ip)
         instance.save()
         return instance

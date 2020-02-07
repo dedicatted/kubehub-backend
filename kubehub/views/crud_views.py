@@ -31,7 +31,7 @@ def cloud_provider_remove(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            pk = data.pop('cloud_provider_id')
+            pk = data.pop('id')
             instance = CloudProvider.objects.get(pk=pk)
             instance.delete()
             return JsonResponse({'deleted': model_to_dict(instance)})
@@ -45,7 +45,7 @@ def cloud_provider_edit(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            pk = data.pop('cloud_provider_id')
+            pk = data.pop('id')
             instance = CloudProvider.objects.get(pk=pk)
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
