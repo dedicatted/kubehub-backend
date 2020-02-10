@@ -24,16 +24,7 @@ def populate_template_list(request):
             tls = TemplateSerializer(data=template)
             if tls.is_valid():
                 tl = tls.create(tls.validated_data)
-        return JsonResponse(model_to_dict(tl))
-    else:
-        return JsonResponse({'errors': tls.errors})
-    # return JsonResponse({'operation': 'populate_template_list'})
-        # for template in template_list:
-        #     tls = TemplateSerializer(data=template)
-        #     if tls.is_valid():
-        #         tl = tls.create(tls.validated_data)
-        #         return JsonResponse(model_to_dict(tl))
-        #     else:
-        #         return JsonResponse({'errors': tls.errors})
-        # return JsonResponse({'operation': 'populate_template_list'})
+            else:
+                return JsonResponse({'errors': tls.errors})
+    return JsonResponse(model_to_dict(tl))
 
