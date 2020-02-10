@@ -26,7 +26,7 @@ class Template(models.Model):
                        'type', 'netin', 'maxdisk', 'mem', 'maxmem', 'netout', 'uptime')
 
     def __str__(self):
-        return f'id: {self.id}, name: {self.name}, vmid: {self.vmid}, diskread: {self.diskread}, ' \
+        return f'template_id: {self.id}, name: {self.name}, vmid: {self.vmid}, diskread: {self.diskread}, ' \
                f'template: {self.template}, status: {self.status}, disk: {self.disk}, node: {self.node}, ' \
                f'cpu: {self.cpu}, diskwrite: {self.diskwrite}, maxcpu: {self.maxcpu}, type: {self.type}, ' \
                f'netin: {self.netin}, maxdisk: {self.maxdisk}, mem: {self.mem}, maxmem: {self.maxmem}, ' \
