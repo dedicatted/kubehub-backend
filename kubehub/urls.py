@@ -1,5 +1,5 @@
 from django.conf.urls import url
-
+from .views import tamplate_view
 from .views import crud_views
 from .views import kubespray_deploy
 from .views import vm_group_crud_view
@@ -25,7 +25,10 @@ urlpatterns = [
     url(r'^vm/group/remove$', vm_group_crud_view.vm_group_remove, name='virtual_machines_group_remove'),
     url(r'^vm/group/edit$', vm_group_crud_view.vm_group_edit, name='virtual_machines_group_edit'),
 
-    url(r'^vm/group/create$', create_vm_group.create_vm_group, name='vm_group_create')
+    url(r'^vm/group/create$', create_vm_group.create_vm_group, name='vm_group_create'),
+
+    url(r'^template/list$', tamplate_view.list_template, name='proxmox_template_list'),
+    url(r'^`template/populate`$', tamplate_view.populate_template_list, name='proxmox_template_populate'),
 ]
 
 

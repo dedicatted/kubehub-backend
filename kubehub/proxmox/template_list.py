@@ -16,8 +16,8 @@ def template_list(request):
             proxmox = ProxmoxAPI(host=instance.api_endpoint, user='root@pam', password=instance.password, verify_ssl=False)
             vm = proxmox.cluster.resources.get(type='vm')
             template = list(filter(lambda x: "template" in x["name"], vm))
-            name_id = [{"name": temp["name"], "vmid": temp["vmid"]} for temp in template]
+            # name_id = [{"name": temp["name"], "vmid": temp["vmid"]} for temp in template]
         except Exception as e:
             return JsonResponse(e.args, safe=False)
         else:
-            return JsonResponse(name_id, safe=False)
+            return JsonResponse(template[0].get("name").get("vmid"), safe=False)
