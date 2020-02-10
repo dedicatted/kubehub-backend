@@ -6,7 +6,7 @@ import json
 
 from ..models.template import Template
 from ..serializers.template_serializer import TemplateSerializer
-from ..proxmox.template_list import template_list
+from ..proxmox.get_template_list import get_template_list
 
 
 @csrf_exempt
@@ -16,14 +16,24 @@ def list_template(request):
 
 @csrf_exempt
 def populate_template_list(request):
+    global tl
     if request.method == 'POST':
         data = json.loads(request.body)
-        template_list_data = template_list(data)
-        tls = TemplateSerializer(data=template_list_data)
-        print(tls)
-        if tls.is_valid():
-            tl = tls.create(tls.validated_data)
-            return JsonResponse(model_to_dict(tl))
-        else:
-            return JsonResponse({'errors': tls.errors})
-    return JsonResponse({'operation': 'populate_template_list'})
+        template_list = get_template_list(data)
+        for template in template_list:
+            tls = TemplateSerializer(data=template)
+            if tls.is_valid():
+                tl = tls.create(tls.validated_data)
+        return JsonResponse(model_to_dict(tl))
+    else:
+        return JsonResponse({'errors': tls.errors})
+    # return JsonResponse({'operation': 'populate_template_list'})
+        # for template in template_list:
+        #     tls = TemplateSerializer(data=template)
+        #     if tls.is_valid():
+        #         tl = tls.create(tls.validated_data)
+        #         return JsonResponse(model_to_dict(tl))
+        #     else:
+        #         return JsonResponse({'errors': tls.errors})
+        # return JsonResponse({'operation': 'populate_template_list'})
+

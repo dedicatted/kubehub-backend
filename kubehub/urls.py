@@ -4,7 +4,6 @@ from .views import crud_views
 from .views import kubespray_deploy
 from .views import vm_group_crud_view
 from .proxmox import node_list
-from .proxmox import template_list
 from .proxmox import vm_delete
 from .proxmox import create_vm_group
 
@@ -17,7 +16,6 @@ urlpatterns = [
     url(r'^cluster/create/$', kubespray_deploy.kubespray_deploy, name='cluster_create'),
 
     url(r'^nodes/list$', node_list.node_list, name='proxmox_nodes_list'),
-    url(r'^template/list$', template_list.template_list, name='proxmox_template_list'),
     url(r'^vm/delete$', vm_delete.vm_delete, name='proxmox_vm_delete'),
 
     url(r'^vm/group/list$', vm_group_crud_view.vm_group_list, name='virtual_machines_group_list'),
@@ -28,7 +26,7 @@ urlpatterns = [
     url(r'^vm/group/create$', create_vm_group.create_vm_group, name='vm_group_create'),
 
     url(r'^template/list$', tamplate_view.list_template, name='proxmox_template_list'),
-    url(r'^`template/populate`$', tamplate_view.populate_template_list, name='proxmox_template_populate'),
+    url(r'^template/populate$', tamplate_view.populate_template_list, name='proxmox_template_populate'),
 ]
 
 
