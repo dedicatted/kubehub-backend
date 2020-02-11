@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 
 import multiprocessing
 import json
@@ -14,7 +14,7 @@ def create_vm_group(request):
         try:
             data = json.loads(request.body)
             number_of_cores = multiprocessing.cpu_count()
-            pool = Pool(number_of_cores)
+            pool = ThreadPool(number_of_cores)
             data = [data]*int(data["number_of_nodes"])
             return JsonResponse(str(pool.map(create_vm, data)), safe=False)
         except Exception as e:
