@@ -7,12 +7,13 @@ from ..proxmox.vm_clone import vm_clone
 from ..proxmox.vm_start import vm_start
 from ..proxmox.vm_status import vm_status
 from ..proxmox.get_vm_ip import get_vm_ip
+from ..proxmox.get_newid import get_newid
 
 
 def create_vm(data):
     cloud_provider_instance = CloudProvider.objects.get(pk=data['cloud_provider_id'])
     template_instance = Template.objects.get(pk=data['template_id'])
-    newid = random.randint(100, 200)
+    newid = get_newid(host=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password)
     vm_clone(proxmox_ip=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, node=data["node"], vmid=template_instance.vmid, newid=newid, name=data["name"], target='pve-01')
     vm_start(proxmox_ip=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, node=data["node"], vmid=newid)
     status = vm_status(proxmox_ip=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, node=data["node"], vmid=newid)
