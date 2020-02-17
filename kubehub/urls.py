@@ -4,6 +4,7 @@ from .views import crud_views
 from .views import kubespray_deploy
 from .views import vm_group_view
 from .proxmox import vm_delete
+from .proxmox import create_vm_group
 
 
 urlpatterns = [
