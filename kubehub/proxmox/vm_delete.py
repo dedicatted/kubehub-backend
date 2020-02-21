@@ -21,6 +21,9 @@ def vm_delete(data):
         proxmox.nodes(data["node"]).qemu(data["vmid"]).status().stop().post()
         status = vm_status(proxmox_ip=cloud_provider_instance.api_endpoint, node=data["node"],
                            password=cloud_provider_instance.password, vmid=data["vmid"])
-        if status == "stopped":
-            delete = proxmox.nodes(data["node"]).qemu().delete(data["vmid"])
-            return JsonResponse(delete, safe=False)
+    vm_list = proxmox.cluster.resources.get(type='vm')
+    vmid_list = [vm["vmid"] for vm in vm_list]
+    while data["vmid"] in vmid_list:
+        time.sleep(20)
+        delete = proxmox.nodes(data["node"]).qemu().delete(data["vmid"])
+        return JsonResponse(delete, safe=False)

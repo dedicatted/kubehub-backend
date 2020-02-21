@@ -3,7 +3,7 @@ from .views import tamplate_view
 from .views import crud_views
 from .views import kubespray_deploy
 from .views import vm_group_view
-from .proxmox import vm_delete
+from .proxmox import vm_group_delete
 
 
 urlpatterns = [
@@ -12,11 +12,13 @@ urlpatterns = [
     url(r'^remove$', crud_views.cloud_provider_remove, name='cloud_provider_remove'),
     url(r'^edit$', crud_views.cloud_provider_edit, name='cloud_provider_edit'),
     url(r'^cluster/create/$', kubespray_deploy.kubespray_deploy, name='cluster_create'),
-    url(r'^vm/delete$', vm_delete.vm_delete, name='proxmox_vm_delete'),
     url(r'^vm/group/list$', vm_group_view.vm_group_list, name='virtual_machines_group_list'),
     url(r'^vm/group/add$', vm_group_view.vm_group_add, name='virtual_machines_group_add'),
     url(r'^template/list$', tamplate_view.list_template, name='proxmox_template_list'),
     url(r'^template/populate$', tamplate_view.populate_template_list, name='proxmox_template_populate'),
+
+    url(r'^vm/delete$', vm_group_delete.vm_group_delete, name='proxmox_vm_delete'),
+
 ]
 
 
