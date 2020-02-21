@@ -6,7 +6,7 @@ def get_less_busy_node(host, password):
     nodes = proxmox.nodes.get()
     less_busy_node = nodes[0]
     for node in nodes:
-        if node["mem"] < less_busy_node["mem"]:
+        if node["maxmem"]-node["mem"] > less_busy_node["maxmem"]-less_busy_node["mem"]:
             less_busy_node = node
     less_busy_node_name = less_busy_node["node"]
     return less_busy_node_name
