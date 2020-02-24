@@ -1,7 +1,10 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
 import subprocess
 import json
+
+from ..models.vm_group import VM
 
 
 @csrf_exempt
@@ -9,7 +12,10 @@ def kubespray_deploy(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            cmd = ["./scripts/cluster_create.sh", data["virtual_machine_ip"]]
+            vm_group__instance = VM.objects.filter(vm_group=data['vm_group_id']).values_list('ip', flat=True)
+            vms_ip = list(vm_group__instance)
+            virtual_machine_ip = (" ".join(vms_ip))
+            cmd = ["./scripts/cluster_create.sh", virtual_machine_ip]
             output = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
         except Exception as e:
             return JsonResponse(e.args, safe=False)
