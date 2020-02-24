@@ -7,6 +7,7 @@ import json
 from ..models.vm_group import VMGroup, VM
 from ..serializers.vm_group_serializer import VMGroupSerializer
 from ..proxmox.create_vm_group import create_vm_group
+from ..proxmox.vm_group_delete import vm_group_delete
 
 
 @csrf_exempt
@@ -36,3 +37,19 @@ def vm_group_add(request):
             return JsonResponse({"data": vmgs.validated_data})
         else:
             return JsonResponse({'errors': vmgs.errors})
+
+
+@csrf_exempt
+def vm_group_remove(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            pk = data.pop('vm_group_id')
+            delete = vm_group_delete(data)
+            if delete:
+                instance = VMGroup.objects.get(pk=pk)
+                instance.delete()
+                return JsonResponse({'deleted': model_to_dict(instance)})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+    return JsonResponse({'operation': 'remove'})
