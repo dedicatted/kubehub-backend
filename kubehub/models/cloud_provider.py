@@ -1,6 +1,6 @@
-import subprocess
-
 from django.db import models
+
+import subprocess
 
 
 class CloudProvider(models.Model):
