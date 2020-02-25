@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from ..models.vm_group import VMGroup, VM
+
+from ..models.vm_group import VM, VMGroup
 
 
 class VMSerializer(serializers.ModelSerializer):

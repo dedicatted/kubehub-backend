@@ -1,13 +1,13 @@
+from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.forms.models import model_to_dict
 
 import json
 
-from ..models.vm_group import VMGroup, VM
-from ..serializers.vm_group_serializer import VMGroupSerializer
-from ..proxmox.create_vm_group import create_vm_group
+from ..models.vm_group import VM, VMGroup
+from ..proxmox.vm_group_create import create_vm_group
 from ..proxmox.vm_group_delete import vm_group_delete
+from ..serializers.vm_group_serializer import VMGroupSerializer
 
 
 @csrf_exempt

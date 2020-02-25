@@ -1,8 +1,11 @@
-from proxmoxer import ProxmoxAPI
+from ..proxmox.proxmox_auth import proxmox_auth
 
 
 def get_vm_ip(proxmox_ip, password, node, vmid):
-    proxmox = ProxmoxAPI(host=proxmox_ip, user='root@pam', password=password, verify_ssl=False)
+    proxmox = proxmox_auth(
+        host=proxmox_ip,
+        password=password
+    )
     status = False
     while not status:
         try:
