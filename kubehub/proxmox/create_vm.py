@@ -18,11 +18,10 @@ def create_vm(data):
     vm_start(proxmox_ip=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, node=get_vm_node(host=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, vmid=newid), vmid=newid)
     status = vm_status(proxmox_ip=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, node=get_vm_node(host=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, vmid=newid), vmid=newid)
     while status != "running":
-        time.sleep(35)
+        time.sleep(55)
         vm_start(proxmox_ip=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, node=get_vm_node(host=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, vmid=newid), vmid=newid)
         status = vm_status(proxmox_ip=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, node=get_vm_node(host=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, vmid=newid), vmid=newid)
         if status == "running":
-            time.sleep(50)
             ip = get_vm_ip(proxmox_ip=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, node=get_vm_node(host=cloud_provider_instance.api_endpoint, password=cloud_provider_instance.password, vmid=newid), vmid=newid)
             return {"name": data["name"], "vmid": newid, "ip": ip, "cloud_provider_id": cloud_provider_instance.id, "template_id": template_instance.id}
 
