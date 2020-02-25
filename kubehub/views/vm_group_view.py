@@ -44,7 +44,7 @@ def vm_group_remove(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            pk = data.pop('vm_group_id')
+            pk = data.get('vm_group_id')
             delete = vm_group_delete(data)
             if delete:
                 instance = VMGroup.objects.get(pk=pk)
