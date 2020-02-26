@@ -1,8 +1,11 @@
-from proxmoxer import ProxmoxAPI
+from ..proxmox.proxmox_auth import proxmox_auth
 
 
 def get_less_busy_node(host, password):
-    proxmox = ProxmoxAPI(host=host, user='root@pam', password=password, verify_ssl=False)
+    proxmox = proxmox_auth(
+        host=host,
+        password=password
+    )
     nodes = proxmox.nodes.get()
     less_busy_node = nodes[0]
     for node in nodes:
@@ -10,9 +13,3 @@ def get_less_busy_node(host, password):
             less_busy_node = node
     less_busy_node_name = less_busy_node["node"]
     return less_busy_node_name
-
-
-
-
-
-

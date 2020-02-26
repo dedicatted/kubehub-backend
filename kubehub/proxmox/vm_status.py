@@ -1,7 +1,10 @@
-from proxmoxer import ProxmoxAPI
+from ..proxmox.proxmox_auth import proxmox_auth
 
 
-def vm_status(proxmox_ip, password, node, vmid):
-    proxmox = ProxmoxAPI(host=proxmox_ip, user='root@pam', password=password, verify_ssl=False)
+def vm_status(host, password, node, vmid):
+    proxmox = proxmox_auth(
+        host=host,
+        password=password
+    )
     status = proxmox.nodes(node).qemu(vmid).status('current').get()
     return status.get("status")

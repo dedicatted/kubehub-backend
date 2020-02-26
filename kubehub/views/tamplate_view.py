@@ -1,12 +1,12 @@
+from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.forms.models import model_to_dict
 
 import json
 
 from ..models.template import Template
-from ..serializers.template_serializer import TemplateSerializer
 from ..proxmox.get_template_list import get_template_list
+from ..serializers.template_serializer import TemplateSerializer
 
 
 @csrf_exempt
@@ -27,4 +27,3 @@ def populate_template_list(request):
             else:
                 return JsonResponse({'errors': tls.errors})
     return JsonResponse(model_to_dict(tl))
-
