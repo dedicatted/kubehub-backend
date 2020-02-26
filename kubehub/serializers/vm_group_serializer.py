@@ -14,7 +14,7 @@ class VMGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VMGroup
-        fields = ('id', 'name', 'user_id', 'vms')
+        fields = ('id', 'name', 'user_id', 'status', 'vms')
 
     def create(self, validated_data):
         vms = validated_data.pop('vms')

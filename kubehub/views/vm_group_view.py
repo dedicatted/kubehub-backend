@@ -29,6 +29,7 @@ def vm_group_add(request):
         virtual_machine_group = {
             "name": data['name'],
             "user_id": "1",
+            "status": "ready",
             "vms": vmg_list
         }
         vmgs = VMGroupSerializer(data=virtual_machine_group)
