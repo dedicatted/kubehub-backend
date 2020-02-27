@@ -22,6 +22,18 @@ def vm_group_list(request):
 
 
 @csrf_exempt
+def get_vm_group_status(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            pk = data.get('vm_group_id')
+            instance = VMGroup.objects.get(pk=pk)
+            return JsonResponse(str(instance.status), safe=False)
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+
+
+@csrf_exempt
 def vm_group_add(request):
     if request.method == 'POST':
         data = json.loads(request.body)
