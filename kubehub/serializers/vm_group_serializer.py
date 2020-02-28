@@ -25,6 +25,7 @@ class VMGroupSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.status = validated_data.get('status', instance.status)
+        instance.vms.set = validated_data.get('vms', instance.vms)
         instance.save()
 
         return instance

@@ -7,7 +7,7 @@ import json
 from ..models.vm_group import VM, VMGroup
 from ..proxmox.vm_group_create import create_vm_group
 from ..proxmox.vm_group_delete import vm_group_delete
-from ..serializers.vm_group_serializer import VMGroupSerializer
+from ..serializers.vm_group_serializer import VMGroupSerializer, VMSerializer
 
 
 @csrf_exempt
@@ -37,19 +37,48 @@ def get_vm_group_status(request):
 def vm_group_add(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        vmg_list = create_vm_group(data)
         virtual_machine_group = {
             "name": data['name'],
             "user_id": "1",
-            "status": "running",
-            "vms": vmg_list
+            "status": "creating",
+            "vms": [{
+                "name": "creating",
+                "vmid": "0",
+                "ip": "creating",
+                "template_id": "0",
+                "cloud_provider_id": "0"
+            }for _ in range(int(data["number_of_nodes"]))]
         }
         vmgs = VMGroupSerializer(data=virtual_machine_group)
         if vmgs.is_valid():
-            vmgs.save()
+            created_group = vmgs.create(vmgs.validated_data)
+            pk = created_group.id
+            vmg_list = create_vm_group(data)
+            vms_update(
+                pk=pk,
+                vms=vmg_list
+            )
+            status_update(
+                pk=pk,
+                status="running"
+            )
             return JsonResponse({"data": vmgs.validated_data})
         else:
             return JsonResponse({'errors': vmgs.errors})
+
+
+def vms_update(pk, vms):
+    vms_instance = VM.objects.filter(vm_group__id=pk)
+    updated_vms = []
+    for instance, vm in zip(list(vms_instance), vms):
+        vm_serializer = VMSerializer(data=vm, partial=True)
+        if vm_serializer.is_valid():
+            vm = vm_serializer.update(instance, vm_serializer.validated_data)
+            updated_vms.append(model_to_dict(vm))
+        else:
+            print(vm_serializer.errors)
+
+    return updated_vms
 
 
 def status_update(pk, status):
