@@ -8,7 +8,13 @@ class VMGroup(models.Model):
     name = models.CharField(max_length=name_max)
     user_id = models.IntegerField()
     readonly_fields = ('name', 'user_id')
-    status = models.CharField(max_length=name_max)
+    statuses = (
+        ('creating', 'creating'),
+        ('running', 'running'),
+        ('removing', 'removing'),
+        ('removed', 'removed')
+    )
+    status = models.CharField(max_length=name_max, choices=statuses)
 
     def __str__(self):
         return f'vmg_id: {self.id}, name: {self.name}, user_id: {self.user_id}, status: {self.status}'

@@ -58,11 +58,11 @@ def vm_group_add(request):
                 pk=pk,
                 vms=vmg_list
             )
-            status_update(
+            vmg = status_update(
                 pk=pk,
                 status="running"
             )
-            return JsonResponse({"data": vmgs.validated_data})
+            return JsonResponse({"data": vmg})
         else:
             return JsonResponse({'errors': vmgs.errors})
 
