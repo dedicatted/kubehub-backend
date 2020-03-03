@@ -47,24 +47,29 @@ def vm_group_add(request):
                 "ip": "creating",
                 "template_id": "0",
                 "cloud_provider_id": "0"
-            }for _ in range(int(data["number_of_nodes"]))]
+            } for _ in range(int(data["number_of_nodes"]))]
         }
         vmgs = VMGroupSerializer(data=virtual_machine_group)
         if vmgs.is_valid():
             created_group = vmgs.create(vmgs.validated_data)
             pk = created_group.id
-            vmg_list = create_vm_group(data)
-            vms_update(
-                pk=pk,
-                vms=vmg_list
-            )
-            vmg = status_update(
-                pk=pk,
-                status="running"
-            )
-            return JsonResponse({"data": vmg})
-        else:
-            return JsonResponse({'errors': vmgs.errors})
+            try:
+                vmg_list = create_vm_group(data)
+                vms_update(
+                    pk=pk,
+                    vms=vmg_list
+                )
+                vmg = status_update(
+                    pk=pk,
+                    status="running"
+                )
+                return JsonResponse({"data": vmg})
+            except Exception as e:
+                status_update(
+                    pk=pk,
+                    status="error"
+                )
+                return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
 def vms_update(pk, vms):
@@ -77,7 +82,6 @@ def vms_update(pk, vms):
             updated_vms.append(model_to_dict(vm))
         else:
             print(vm_serializer.errors)
-
     return updated_vms
 
 
@@ -93,16 +97,23 @@ def status_update(pk, status):
 @csrf_exempt
 def vm_group_remove(request):
     if request.method == 'POST':
+        data = json.loads(request.body)
+        pk = data.get('vm_group_id')
         try:
-            data = json.loads(request.body)
-            pk = data.get('vm_group_id')
             status_update(pk, "removing")
             delete = vm_group_delete(data)
             if delete:
-                status_update(pk, "removed")
+                status_update(
+                    pk=pk,
+                    status="removed"
+                )
                 instance = VMGroup.objects.get(pk=pk)
                 instance.delete()
                 return JsonResponse({'deleted': model_to_dict(instance)})
         except Exception as e:
+            status_update(
+                pk=pk,
+                status="error"
+            )
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
     return JsonResponse({'operation': 'remove'})

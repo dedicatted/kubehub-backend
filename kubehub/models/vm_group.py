@@ -12,7 +12,8 @@ class VMGroup(models.Model):
         ('creating', 'creating'),
         ('running', 'running'),
         ('removing', 'removing'),
-        ('removed', 'removed')
+        ('removed', 'removed'),
+        ('error', 'error')
     )
     status = models.CharField(max_length=name_max, choices=statuses)
 
