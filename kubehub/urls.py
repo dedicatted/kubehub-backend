@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^edit$', crud_views.cloud_provider_edit, name='cloud_provider_edit'),
     url(r'^cluster/create$', kubespray_deploy.kubespray_deploy, name='cluster_create'),
     url(r'^vm/group/list$', vm_group_view.vm_group_list, name='virtual_machines_group_list'),
+    url(r'^vm/group/status$', vm_group_view.get_vm_group_status, name='vm_group_status'),
     url(r'^vm/group/add$', vm_group_view.vm_group_add, name='virtual_machines_group_add'),
     url(r'^vm/group/remove$', vm_group_view.vm_group_remove, name='virtual_machines_group_remove'),
     url(r'^template/list$', tamplate_view.list_template, name='proxmox_template_list'),
