@@ -30,7 +30,7 @@ def kubernetes_cluster_add(request):
         data = json.loads(request.body)
         kubernetes_cluster = {
             'name': data['name'],
-            'kubernetes_version': data['k8s_version'],
+            'k8s_version': data['k8s_version'],
             'vm_group': data['vm_group_id']
         }
         kubespray = kubespray_deploy(vm_group=data['vm_group_id'])
