@@ -1,13 +1,19 @@
 from django.conf.urls import url
 
 from .views import crud_views, kubespray_deploy, tamplate_view, vm_group_view
+from .k8s_deploy import deploy_log_file_create
 
 urlpatterns = [
     url(r'^list$', crud_views.cloud_provider_list, name='cloud_provider_list'),
     url(r'^add$', crud_views.cloud_provider_add, name='cloud_provider_add'),
     url(r'^remove$', crud_views.cloud_provider_remove, name='cloud_provider_remove'),
     url(r'^edit$', crud_views.cloud_provider_edit, name='cloud_provider_edit'),
-    url(r'^cluster/create$', kubespray_deploy.kubespray_deploy, name='cluster_create'),
+
+
+    url(r'^cluster/create$', deploy_log_file_create.create_log_file, name='cluster_create'),
+
+
+
     url(r'^vm/group/list$', vm_group_view.vm_group_list, name='virtual_machines_group_list'),
     url(r'^vm/group/status$', vm_group_view.get_vm_group_status, name='vm_group_status'),
     url(r'^vm/group/add$', vm_group_view.vm_group_add, name='virtual_machines_group_add'),
