@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models.kubernetes_cluster import KubernetesCluster
+from ..models.k8s_cluster import KubernetesCluster
 
 
 class KubernetesClusterSerializer(serializers.ModelSerializer):
