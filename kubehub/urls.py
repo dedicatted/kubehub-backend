@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
 from .views import crud_views, kubespray_deploy, tamplate_view, vm_group_view
+from .proxmox import proxmox_hard_drive_cleaning
 
 urlpatterns = [
     url(r'^list$', crud_views.cloud_provider_list, name='cloud_provider_list'),
@@ -13,5 +14,6 @@ urlpatterns = [
     url(r'^vm/group/add$', vm_group_view.vm_group_add, name='virtual_machines_group_add'),
     url(r'^vm/group/remove$', vm_group_view.vm_group_remove, name='virtual_machines_group_remove'),
     url(r'^template/list$', tamplate_view.list_template, name='proxmox_template_list'),
-    url(r'^template/populate$', tamplate_view.populate_template_list, name='proxmox_template_populate')
+    url(r'^template/populate$', tamplate_view.populate_template_list, name='proxmox_template_populate'),
+    url(r'^proxmox/clean$', proxmox_hard_drive_cleaning.proxmox_hard_drive_cleaning, name='proxmox_hard_drive_cleaning')
 ]
