@@ -1,5 +1,7 @@
 from django.conf.urls import url
 
+from .views import crud_views, kubespray_deploy, tamplate_view, vm_group_view
+from .proxmox import proxmox_hard_drive_cleaning
 from .views import crud_views, kubespray_deploy_view, tamplate_view, vm_group_view
 
 urlpatterns = [
@@ -7,6 +9,8 @@ urlpatterns = [
     url(r'^add$', crud_views.cloud_provider_add, name='cloud_provider_add'),
     url(r'^remove$', crud_views.cloud_provider_remove, name='cloud_provider_remove'),
     url(r'^edit$', crud_views.cloud_provider_edit, name='cloud_provider_edit'),
+    url(r'^cluster/create$', kubespray_deploy.kubernetes_cluster_add, name='cluster_create'),
+    url(r'^cluster/list$', kubespray_deploy.kubernetes_cluster_list, name='cluster_list'),
     url(r'^kubespray/deploy$', kubespray_deploy_view.kubespray_deploy, name='kubespray_deploy'),
     url(r'^vm/group/list$', vm_group_view.vm_group_list, name='virtual_machines_group_list'),
     url(r'^vm/group/status$', vm_group_view.get_vm_group_status, name='vm_group_status'),
