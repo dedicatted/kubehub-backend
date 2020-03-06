@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+
+# kubehub db service
+  db:
+    image: mariadb:10
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: 'kubehub-back-db'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DEFAULT_CHARSET_SET: 'utf8'
+
+# kubehub backend service
+  kubehub-back:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - "db"
