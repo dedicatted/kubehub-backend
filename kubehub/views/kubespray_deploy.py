@@ -21,3 +21,4 @@ def kubespray_deploy(request):
             return JsonResponse(e.args, safe=False)
         else:
             return JsonResponse(str(output), safe=False)
+
