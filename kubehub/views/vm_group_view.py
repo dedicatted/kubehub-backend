@@ -46,9 +46,10 @@ def vm_group_add(request):
                 "vmid": "0",
                 "ip": "creating",
                 "template_id": "0",
-                "cloud_provider_id": "0"
+                "cloud_provider": data['cloud_provider_id']
             } for _ in range(int(data["number_of_nodes"]))]
         }
+        print(virtual_machine_group)
         vmgs = VMGroupSerializer(data=virtual_machine_group)
         if vmgs.is_valid():
             created_group = vmgs.create(vmgs.validated_data)
@@ -70,6 +71,8 @@ def vm_group_add(request):
                     status="error"
                 )
                 return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+        else:
+            return JsonResponse({'errors': vmgs.errors})
 
 
 def vms_update(pk, vms):

@@ -6,7 +6,7 @@ from ..models.vm_group import VM, VMGroup
 class VMSerializer(serializers.ModelSerializer):
     class Meta:
         model = VM
-        fields = ('id', 'name', 'vmid', 'ip', 'template_id', 'cloud_provider_id')
+        fields = ('id', 'name', 'vmid', 'ip', 'template_id', 'cloud_provider')
 
 
 class VMGroupSerializer(serializers.ModelSerializer):
