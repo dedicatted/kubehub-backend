@@ -45,7 +45,7 @@ def vm_group_add(request):
                 "name": "creating",
                 "vmid": "0",
                 "ip": "creating",
-                "template_id": "0",
+                "template": data['template_id'],
                 "cloud_provider": data['cloud_provider_id']
             } for _ in range(int(data["number_of_nodes"]))]
         }
@@ -56,10 +56,10 @@ def vm_group_add(request):
             pk = created_group.id
             try:
                 vmg_list = create_vm_group(data)
-                vms_update(
-                    pk=pk,
-                    vms=vmg_list
-                )
+                # vms_update(
+                #     pk=pk,
+                #     vms=vmg_list
+                # )
                 vmg = status_update(
                     pk=pk,
                     status="running"
