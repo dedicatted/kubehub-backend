@@ -10,3 +10,4 @@ pbr==5.2.0
 hvac==0.8.2
 jmespath==0.9.4
 ruamel.yaml==0.15.96
+python-dotenv==0.12.0
