@@ -32,6 +32,7 @@ def kubernetes_cluster_add(request):
         try:
             kubernetes_cluster = loads(request.body)
             kcs = KubernetesClusterSerializer(data=kubernetes_cluster)
+            kubernetes_cluster["status"] = "ready_to_deploy"
             if kcs.is_valid():
                 kcs.create(kcs.validated_data)
                 response = dict(kcs.validated_data)
