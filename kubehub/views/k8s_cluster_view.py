@@ -3,8 +3,11 @@ from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 
 from json import loads
+from ..models.vm_group import VMGroup
 from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
+from ..proxmox.vm_group_delete import vm_group_delete
+from ..serializers.vm_group_serializer import VMGroupSerializer
 from ..serializers.k8s_cluster_serializer import KubernetesClusterSerializer
 
 
@@ -49,9 +52,58 @@ def kubernetes_cluster_remove(request):
     if request.method == 'POST':
         try:
             data = loads(request.body)
-            pk = data.get('k8s_cluster_id')
-            instance = KubernetesCluster.objects.get(pk=pk)
-            instance.delete()
-            return JsonResponse({'deleted': model_to_dict(instance)})
+            data['vm_group_id'] = KubernetesCluster.objects.get(pk=data['k8s_cluster_id']).vm_group.id
+            vm_group_pk = data.get('vm_group_id')
+            k8s_cluster_pk = data.get('k8s_cluster_id')
+            try:
+                k8s_cluster_status_update(
+                    pk=k8s_cluster_pk,
+                    status="removing"
+                )
+                vm_group_status_update(
+                    pk=vm_group_pk,
+                    status="removing"
+                )
+                delete = vm_group_delete(data)
+                if delete:
+                    vm_group_status_update(
+                        pk=vm_group_pk,
+                        status="removed"
+                    )
+                    k8s_cluster_status_update(
+                        pk=k8s_cluster_pk,
+                        status="removed"
+                    )
+                    k8s_cluster_instance = KubernetesCluster.objects.get(pk=k8s_cluster_pk)
+                    k8s_cluster_instance.delete()
+                    return JsonResponse({'deleted': model_to_dict(k8s_cluster_instance)})
+            except Exception as e:
+                k8s_cluster_status_update(
+                    pk=k8s_cluster_pk,
+                    status="error"
+                )
+                vm_group_status_update(
+                    pk=vm_group_pk,
+                    status="error"
+                )
+                return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+
+
+def k8s_cluster_status_update(pk, status):
+    instance = KubernetesCluster.objects.get(pk=pk)
+    data = {"status": status}
+    k8scs = KubernetesClusterSerializer(data=data, partial=True)
+    if k8scs.is_valid():
+        k8sc = k8scs.update(instance, k8scs.validated_data)
+        return model_to_dict(k8sc)
+
+
+def vm_group_status_update(pk, status):
+    instance = VMGroup.objects.get(pk=pk)
+    data = {"status": status}
+    vmgs = VMGroupSerializer(data=data, partial=True)
+    if vmgs.is_valid():
+        vmg = vmgs.update(instance, vmgs.validated_data)
+        return model_to_dict(vmg)
