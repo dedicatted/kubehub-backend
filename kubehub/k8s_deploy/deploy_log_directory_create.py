@@ -1,9 +1,10 @@
 from os import mkdir
 from os.path import exists
+from kubehub_backend.settings import K8S_DEPLOY_LOG_DIR
 
 
 def create_deploy_logs_dir():
-    path = "/tmp/k8s-deploy-logs/"
+    path = K8S_DEPLOY_LOG_DIR
     if not exists(path=path):
         try:
             mkdir(path)

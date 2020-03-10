@@ -10,17 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+from dotenv import load_dotenv, find_dotenv
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+load_dotenv(find_dotenv())
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '0+0s51v)_3ftl1poz-g2%0$ad1nme_ef(%&!(d2^=1+sxk+=a9'
+
+# Dir to store kubespray deployments
+K8S_DEPLOY_LOG_DIR = os.getenv("K8S_DEPLOY_LOG_DIR")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kubehub',
-    'corsheaders'
+    'corsheaders',
+    'dotenv'
 ]
 
 MIDDLEWARE = [
