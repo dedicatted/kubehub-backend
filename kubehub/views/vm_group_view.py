@@ -1,8 +1,7 @@
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-import json
+from json import loads
 
 from ..models.vm_group import VM, VMGroup
 from ..proxmox.vm_group_create import create_vm_group
@@ -25,7 +24,7 @@ def vm_group_list(request):
 def get_vm_group_status(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
+            data = loads(request.body)
             pk = data.get('vm_group_id')
             instance = VMGroup.objects.get(pk=pk)
             return JsonResponse(str(instance.status), safe=False)
@@ -36,7 +35,7 @@ def get_vm_group_status(request):
 @csrf_exempt
 def vm_group_add(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
         virtual_machine_group = {
             "name": data['name'],
             "user_id": "1",
@@ -45,21 +44,20 @@ def vm_group_add(request):
                 "name": "creating",
                 "vmid": "0",
                 "ip": "creating",
-                "template": data['template_id'],
-                "cloud_provider": data['cloud_provider_id']
+                "template_id": "0",
+                "cloud_provider_id": "0"
             } for _ in range(int(data["number_of_nodes"]))]
         }
-        print(virtual_machine_group)
         vmgs = VMGroupSerializer(data=virtual_machine_group)
         if vmgs.is_valid():
             created_group = vmgs.create(vmgs.validated_data)
             pk = created_group.id
             try:
                 vmg_list = create_vm_group(data)
-                # vms_update(
-                #     pk=pk,
-                #     vms=vmg_list
-                # )
+                vms_update(
+                    pk=pk,
+                    vms=vmg_list
+                )
                 vmg = status_update(
                     pk=pk,
                     status="running"
@@ -71,8 +69,6 @@ def vm_group_add(request):
                     status="error"
                 )
                 return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
-        else:
-            return JsonResponse({'errors': vmgs.errors})
 
 
 def vms_update(pk, vms):
@@ -100,7 +96,7 @@ def status_update(pk, status):
 @csrf_exempt
 def vm_group_remove(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
         pk = data.get('vm_group_id')
         try:
             status_update(pk, "removing")
