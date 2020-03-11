@@ -26,11 +26,6 @@ def kubespray_deploy(request):
         nomber_of_node = len(vms_ip) + 1
         virtual_machine_ip = (" ".join(vms_ip))
         cmd = ["./scripts/cluster_create.sh", virtual_machine_ip]
-        log_fd_create = create_log_file(
-            log_dir_path=log_dir,
-            k8s_cluster_id=k8s_cluster_id,
-            vm_group_id=vm_group_id
-        )
         kubespray_deploy_data = {
             'status': "deploying",
             'vm_group': vm_group_id,
@@ -45,6 +40,10 @@ def kubespray_deploy(request):
         if kds.is_valid():
             kd = kds.create(kds.validated_data)
             pk = kd.id
+            log_fd_create = create_log_file(
+                log_dir_path=log_dir,
+                kubespray_deploy_id=pk
+            )
             log_fd_open = open(log_fd_create, 'w')
             deploy = Popen(cmd, stdout=log_fd_open).communicate()[0]
             log_fd_open.close()
