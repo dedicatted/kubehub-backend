@@ -10,6 +10,7 @@ from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
 from ..k8s_deploy.deploy_log_file_create import create_log_file
 from ..k8s_deploy.deploy_log_directory_create import create_deploy_logs_dir
+from ..serializers.k8s_cluster_serializer import KubernetesClusterSerializer
 from ..serializers.kubespray_deploy_serializer import KubesprayDeploySerializer
 
 
@@ -35,6 +36,10 @@ def kubespray_deploy(request):
             'vm_group': vm_group_id,
             'k8s_cluster': k8s_cluster_id
         }
+        k8s_cluster_status_update(
+            pk=k8s_cluster_id,
+            status="deploying"
+        )
         print(kubespray_deploy_data)
         kds = KubesprayDeploySerializer(data=kubespray_deploy_data)
         if kds.is_valid():
@@ -51,12 +56,20 @@ def kubespray_deploy(request):
                     pk=pk,
                     status="successful"
                 )
+                k8s_cluster_status_update(
+                    pk=k8s_cluster_id,
+                    status="running"
+                )
                 return JsonResponse(kd)
             else:
                 log_fd_open_read.close()
                 kd = status_update(
                     pk=pk,
                     status="failed"
+                )
+                k8s_cluster_status_update(
+                    pk=k8s_cluster_id,
+                    status="error"
                 )
                 return JsonResponse(kd)
         else:
@@ -70,4 +83,13 @@ def status_update(pk, status):
     if kds.is_valid():
         kd = kds.update(instance, kds.validated_data)
         return model_to_dict(kd)
+
+
+def k8s_cluster_status_update(pk, status):
+    instance = KubernetesCluster.objects.get(pk=pk)
+    data = {"status": status}
+    k8scs = KubernetesClusterSerializer(data=data, partial=True)
+    if k8scs.is_valid():
+        k8sc = k8scs.update(instance, k8scs.validated_data)
+        return model_to_dict(k8sc)
 

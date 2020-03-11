@@ -7,7 +7,7 @@ class KubernetesClusterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = KubernetesCluster
-        fields = ('id', 'name', 'k8s_version', 'vm_group')
+        fields = ('id', 'name', 'k8s_version', 'vm_group', 'status')
 
     def create(self, validated_data):
         kubernetes_cluster = KubernetesCluster.objects.create(**validated_data)
