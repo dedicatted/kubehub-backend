@@ -14,5 +14,9 @@ def read_deploy_log_file(request):
     fullpath = f'{K8S_DEPLOY_LOG_DIR}{filename}'
     num_lines = sum(1 for line in open(fullpath))
     log_data = open(fullpath).readlines()
-    readed_lines = log_data[-(num_lines-int(data['last_line'])):]
-    return JsonResponse(str({'data': readed_lines, 'last_line': num_lines}), safe=False)
+    line_diff = num_lines-int(data['last_line'])
+    if line_diff != 0:
+        readed_lines = log_data[-line_diff:]
+    else:
+        return JsonResponse({'readed_lines': "", 'last_line': num_lines}, safe=False)
+    return JsonResponse({'readed_lines': readed_lines, 'last_line': num_lines}, safe=False)
