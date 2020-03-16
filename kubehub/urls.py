@@ -4,7 +4,7 @@ from .proxmox import proxmox_hard_drive_cleaning
 from .views import (
     crud_views,
     k8s_cluster_view,
-    read_deploy_log_file,
+    get_deploy_logs,
     restart_kubespray_deploy_view,
     tamplate_view,
     vm_group_view,
@@ -48,7 +48,7 @@ urlpatterns = [
     ),
     url(
         r"^kubespray/deploy/read/log$",
-        read_deploy_log_file.read_deploy_log_file,
+        get_deploy_logs.get_deploy_logs,
         name="kubespray_deploy_read_log",
     ),
     url(
