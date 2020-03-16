@@ -47,9 +47,9 @@ urlpatterns = [
         name="cluster_list"
     ),
     url(
-        r"^kubespray/deploy/read/log$",
+        r"^kubespray/deploy/get/log$",
         get_deploy_logs.get_deploy_logs,
-        name="kubespray_deploy_read_log",
+        name="kubespray_deploy_get_log",
     ),
     url(
         r"^kubespray/deploy/restart$",
