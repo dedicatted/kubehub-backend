@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm -rf kubespray
+
 #download kubespray
 {
 if [ ! -d /kubespray ]; then

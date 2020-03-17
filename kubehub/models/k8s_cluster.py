@@ -13,7 +13,6 @@ class KubernetesCluster(models.Model):
         on_delete=models.CASCADE
     )
     statuses = (
-        ('ready_to_deploy', 'ready_to_deploy'),
         ('deploying', 'deploying'),
         ('running', 'running'),
         ('removing', 'removing'),
