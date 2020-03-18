@@ -24,16 +24,16 @@ def restart_kubespray_deploy(request):
         vm_group__instance = VM.objects.filter(vm_group=vm_group_id).values_list('ip', flat=True)
         vms_ip = list(vm_group__instance)
         nomber_of_node = len(vms_ip) + 1
-        virtual_machine_ip = (" ".join(vms_ip))
-        cmd = ["./scripts/cluster_create.sh", virtual_machine_ip]
+        virtual_machine_ip = ('' ''.join(vms_ip))
+        cmd = ['./scripts/cluster_create.sh', virtual_machine_ip]
         kubespray_deploy_data = {
-            'status': "deploying",
+            'status': 'deploying',
             'vm_group': vm_group_id,
             'k8s_cluster': k8s_cluster_id
         }
         k8s_cluster_status_update(
             id=k8s_cluster_id,
-            status="deploying"
+            status='deploying'
         )
         kds = KubesprayDeploySerializer(data=kubespray_deploy_data)
         if kds.is_valid():
@@ -48,26 +48,26 @@ def restart_kubespray_deploy(request):
             log_fd_open.close()
             log_fd_open_read = open(log_fd_create, 'r')
             contents = log_fd_open_read.read()
-            if len(findall("failed=0", contents)) == nomber_of_node:
+            if len(findall('failed=0', contents)) == nomber_of_node:
                 log_fd_open_read.close()
                 kd = status_update(
                     id=id,
-                    status="successful"
+                    status='successful'
                 )
                 k8s_cluster_status_update(
                     id=k8s_cluster_id,
-                    status="running"
+                    status='running'
                 )
                 return JsonResponse(kd)
             else:
                 log_fd_open_read.close()
                 kd = status_update(
                     id=id,
-                    status="failed"
+                    status='failed'
                 )
                 k8s_cluster_status_update(
                     id=k8s_cluster_id,
-                    status="error"
+                    status='error'
                 )
                 return JsonResponse(kd)
         else:
@@ -76,7 +76,7 @@ def restart_kubespray_deploy(request):
 
 def status_update(id, status):
     instance = KubesprayDeploy.objects.get(id=id)
-    data = {"status": status}
+    data = {'status': status}
     kds = KubesprayDeploySerializer(data=data, partial=True)
     if kds.is_valid():
         kd = kds.update(instance, kds.validated_data)
@@ -85,7 +85,7 @@ def status_update(id, status):
 
 def k8s_cluster_status_update(id, status):
     instance = KubernetesCluster.objects.get(id=id)
-    data = {"status": status}
+    data = {'status': status}
     k8scs = KubernetesClusterSerializer(data=data, partial=True)
     if k8scs.is_valid():
         k8sc = k8scs.update(instance, k8scs.validated_data)

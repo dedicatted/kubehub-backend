@@ -1,8 +1,7 @@
-from django.forms.models import model_to_dict
+from json import loads
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
-
-import json
 
 from kubehub.models.cloud_provider import CloudProvider
 from kubehub.serializers.cloud_provider_serializer import CloudProviderSerializer
@@ -10,13 +9,17 @@ from kubehub.serializers.cloud_provider_serializer import CloudProviderSerialize
 
 @csrf_exempt
 def cloud_provider_list(request):
-    return JsonResponse({'cloud_provider_list': list(CloudProvider.objects.values())})
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'cloud_provider_list': list(CloudProvider.objects.values())})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
 @csrf_exempt
 def cloud_provider_add(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
         cps = CloudProviderSerializer(data=data)
         if cps.is_valid():
             cp = cps.create(cps.validated_data)
@@ -30,7 +33,7 @@ def cloud_provider_add(request):
 def cloud_provider_remove(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
+            data = loads(request.body)
             pk = data.pop('id')
             instance = CloudProvider.objects.get(pk=pk)
             instance.delete()
@@ -44,12 +47,11 @@ def cloud_provider_remove(request):
 def cloud_provider_edit(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
+            data = loads(request.body)
             pk = data.pop('id')
             instance = CloudProvider.objects.get(pk=pk)
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
-
         cps = CloudProviderSerializer(data=data, partial=True)
         if cps.is_valid():
             cp = cps.update(instance, cps.validated_data)

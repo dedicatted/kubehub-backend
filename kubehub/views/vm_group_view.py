@@ -17,9 +17,9 @@ def vm_group_list(request):
             for vm_group in VMGroup.objects.all():
                 vm_list = VM.objects.filter(vm_group=vm_group)
                 vmg_dict = model_to_dict(vm_group)
-                vmg_dict["vms"] = [model_to_dict(vm) for vm in vm_list]
+                vmg_dict['vms'] = [model_to_dict(vm) for vm in vm_list]
                 vm_groups.append(vmg_dict)
-            return JsonResponse({"vm_group_list": vm_groups})
+            return JsonResponse({'vm_group_list': vm_groups})
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
@@ -42,16 +42,16 @@ def vm_group_add(request):
         try:
             data = loads(request.body)
             virtual_machine_group = {
-                "name": data['name'],
-                "user_id": "1",
-                "status": "creating",
-                "vms": [{
-                    "name": "creating",
-                    "vmid": "0",
-                    "ip": "creating",
-                    "template": data['template_id'],
-                    "cloud_provider": data['cloud_provider_id']
-                } for _ in range(int(data["number_of_nodes"]))]
+                'name': data['name'],
+                'user_id': '1',
+                'status': 'creating',
+                'vms': [{
+                    'name': 'creating',
+                    'vmid': '0',
+                    'ip': 'creating',
+                    'template': data['template_id'],
+                    'cloud_provider': data['cloud_provider_id']
+                } for _ in range(int(data['number_of_nodes']))]
             }
             vmgs = VMGroupSerializer(data=virtual_machine_group)
             if vmgs.is_valid():
@@ -65,13 +65,13 @@ def vm_group_add(request):
                     )
                     vmg = status_update(
                         pk=pk,
-                        status="running"
+                        status='running'
                     )
-                    return JsonResponse({"data": vmg})
+                    return JsonResponse({'data': vmg})
                 except Exception as e:
                     status_update(
                         pk=pk,
-                        status="error"
+                        status='error'
                     )
                     return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
             else:
@@ -95,7 +95,7 @@ def vms_update(pk, vms):
 
 def status_update(pk, status):
     instance = VMGroup.objects.get(pk=pk)
-    data = {"status": status}
+    data = {'status': status}
     vmgs = VMGroupSerializer(data=data, partial=True)
     if vmgs.is_valid():
         vmg = vmgs.update(instance, vmgs.validated_data)
@@ -109,12 +109,12 @@ def vm_group_remove(request):
             data = loads(request.body)
             pk = data.get('vm_group_id')
             try:
-                status_update(pk, "removing")
+                status_update(pk, 'removing')
                 delete = vm_group_delete(data)
                 if delete:
                     status_update(
                         pk=pk,
-                        status="removed"
+                        status='removed'
                     )
                     instance = VMGroup.objects.get(pk=pk)
                     instance.delete()
@@ -122,7 +122,7 @@ def vm_group_remove(request):
             except Exception as e:
                 status_update(
                     pk=pk,
-                    status="error"
+                    status='error'
                 )
                 return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
         except Exception as e:

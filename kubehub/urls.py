@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .proxmox import proxmox_hard_drive_cleaning
 from .views import (
-    crud_views,
+    cloud_provider_view,
     k8s_cluster_view,
     get_deploy_logs,
     restart_kubespray_deploy_view,
@@ -13,22 +13,22 @@ from .views import (
 urlpatterns = [
     url(
         r"^list$",
-        crud_views.cloud_provider_list,
+        cloud_provider_view.cloud_provider_list,
         name="cloud_provider_list"
     ),
     url(
         r"^add$",
-        crud_views.cloud_provider_add,
+        cloud_provider_view.cloud_provider_add,
         name="cloud_provider_add"
     ),
     url(
         r"^remove$",
-        crud_views.cloud_provider_remove,
+        cloud_provider_view.cloud_provider_remove,
         name="cloud_provider_remove"
     ),
     url(
         r"^edit$",
-        crud_views.cloud_provider_edit,
+        cloud_provider_view.cloud_provider_edit,
         name="cloud_provider_edit"
     ),
     url(

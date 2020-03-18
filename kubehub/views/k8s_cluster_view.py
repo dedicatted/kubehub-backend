@@ -20,7 +20,7 @@ def kubernetes_cluster_list(request):
             for k8s_cluster in KubernetesCluster.objects.all():
                 kubespray_deploy_list = KubesprayDeploy.objects.filter(k8s_cluster=k8s_cluster)
                 k8s_cluster_dict = model_to_dict(k8s_cluster)
-                k8s_cluster_dict["kubespray_deployments"] = [
+                k8s_cluster_dict['kubespray_deployments'] = [
                     model_to_dict(kubespray_deploy_attempt)
                     for kubespray_deploy_attempt in kubespray_deploy_list
                 ]
@@ -36,21 +36,21 @@ def kubernetes_cluster_add(request):
         try:
             kubernetes_cluster = loads(request.body)
             kcs = KubernetesClusterSerializer(data=kubernetes_cluster)
-            kubernetes_cluster["status"] = "deploying"
+            kubernetes_cluster['status'] = 'deploying'
             if kcs.is_valid():
                 kc = kcs.create(kcs.validated_data)
                 deploy = kubespray_deploy(
                     k8s_cluster_id=kc.id
                 )
-                if deploy.get('status') == "successful":
+                if deploy.get('status') == 'successful':
                     k8s_cluster_status_update(
                         pk=kc.id,
-                        status="running"
+                        status='running'
                     )
                 else:
                     k8s_cluster_status_update(
                         pk=kc.id,
-                        status="error"
+                        status='error'
                     )
                 return JsonResponse(model_to_dict(kc))
             else:
@@ -70,21 +70,21 @@ def kubernetes_cluster_remove(request):
             try:
                 k8s_cluster_status_update(
                     pk=k8s_cluster_pk,
-                    status="removing"
+                    status='removing'
                 )
                 vm_group_status_update(
                     pk=vm_group_pk,
-                    status="removing"
+                    status='removing'
                 )
                 delete = vm_group_delete(data)
                 if delete:
                     vm_group_status_update(
                         pk=vm_group_pk,
-                        status="removed"
+                        status='removed'
                     )
                     k8s_cluster_status_update(
                         pk=k8s_cluster_pk,
-                        status="removed"
+                        status='removed'
                     )
                     k8s_cluster_instance = KubernetesCluster.objects.get(pk=k8s_cluster_pk)
                     k8s_cluster_instance.delete()
@@ -94,11 +94,11 @@ def kubernetes_cluster_remove(request):
             except Exception as e:
                 k8s_cluster_status_update(
                     pk=k8s_cluster_pk,
-                    status="error"
+                    status='error'
                 )
                 vm_group_status_update(
                     pk=vm_group_pk,
-                    status="error"
+                    status='error'
                 )
                 return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
         except Exception as e:
@@ -107,7 +107,7 @@ def kubernetes_cluster_remove(request):
 
 def k8s_cluster_status_update(pk, status):
     instance = KubernetesCluster.objects.get(pk=pk)
-    data = {"status": status}
+    data = {'status': status}
     k8scs = KubernetesClusterSerializer(data=data, partial=True)
     if k8scs.is_valid():
         k8sc = k8scs.update(instance, k8scs.validated_data)
@@ -116,7 +116,7 @@ def k8s_cluster_status_update(pk, status):
 
 def vm_group_status_update(pk, status):
     instance = VMGroup.objects.get(pk=pk)
-    data = {"status": status}
+    data = {'status': status}
     vmgs = VMGroupSerializer(data=data, partial=True)
     if vmgs.is_valid():
         vmg = vmgs.update(instance, vmgs.validated_data)
