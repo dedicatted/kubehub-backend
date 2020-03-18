@@ -23,10 +23,14 @@ def populate_template_list(request):
     if request.method == 'POST':
         data = loads(request.body)
         template_list = get_template_list(data)
+        db_template_list = [vmid['vmid'] for vmid in list(Template.objects.values('vmid'))]
         for template in template_list:
-            tls = TemplateSerializer(data=template)
-            if tls.is_valid():
-                tl = tls.create(tls.validated_data)
+            if template.get('vmid') in db_template_list:
+                template_list.remove(template)
             else:
-                return JsonResponse({'errors': tls.errors})
+                tls = TemplateSerializer(data=template)
+                if tls.is_valid():
+                    tl = tls.create(tls.validated_data)
+                else:
+                    return JsonResponse({'errors': tls.errors})
     return JsonResponse(model_to_dict(tl))
