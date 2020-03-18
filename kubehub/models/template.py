@@ -6,7 +6,7 @@ import subprocess
 class Template(models.Model):
     name_max = int(subprocess.check_output("getconf NAME_MAX /", shell=True))
     name = models.CharField(max_length=name_max)
-    vmid = models.IntegerField()
+    vmid = models.IntegerField(unique=True)
     diskread = models.IntegerField()
     template = models.BooleanField()
     status = models.CharField(max_length=name_max)
