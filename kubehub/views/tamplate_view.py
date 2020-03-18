@@ -1,8 +1,7 @@
+from json import loads
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-import json
 
 from ..models.template import Template
 from ..proxmox.get_template_list import get_template_list
@@ -11,14 +10,18 @@ from ..serializers.template_serializer import TemplateSerializer
 
 @csrf_exempt
 def list_template(request):
-    return JsonResponse({'template_list': list(Template.objects.values())})
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'template_list': list(Template.objects.values())})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
 @csrf_exempt
 def populate_template_list(request):
     global tl
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
         template_list = get_template_list(data)
         for template in template_list:
             tls = TemplateSerializer(data=template)
