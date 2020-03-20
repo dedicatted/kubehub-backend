@@ -27,6 +27,9 @@ SECRET_KEY = '0+0s51v)_3ftl1poz-g2%0$ad1nme_ef(%&!(d2^=1+sxk+=a9'
 # Dir to store kubespray deployments
 K8S_DEPLOY_LOG_DIR = os.getenv("K8S_DEPLOY_LOG_DIR")
 
+# Directory to store kubernetes clusters config file
+K8S_CONFIG_FILE_DIR = os.getenv("K8S_CONFIG_FILE_DIR")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
