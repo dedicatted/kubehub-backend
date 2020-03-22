@@ -1,4 +1,5 @@
 from ..proxmox.proxmox_auth import proxmox_auth
+from ..proxmox.get_root_privileges import get_root_privileges
 
 
 def get_file_data(host, password, node, vmid, filename):
@@ -6,6 +7,12 @@ def get_file_data(host, password, node, vmid, filename):
         host=host,
         password=password
     )
+    get_root_privileges(
+        host=host,
+        password=password,
+        node=node,
+        vmid=vmid
+    )
     agent = proxmox.nodes(node).qemu(vmid).agent('file-read')
-    read_config = agent.get(file=filename)
+    read_config =z agent.get(file=filename)
     return read_config
