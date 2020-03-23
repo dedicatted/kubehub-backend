@@ -14,5 +14,5 @@ def get_file_data(host, password, node, vmid, filename):
         vmid=vmid
     )
     agent = proxmox.nodes(node).qemu(vmid).agent('file-read')
-    read_config =z agent.get(file=filename)
+    read_config = agent.get(file=filename)
     return read_config
