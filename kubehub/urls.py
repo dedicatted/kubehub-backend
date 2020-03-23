@@ -8,6 +8,7 @@ from .views import (
     restart_kubespray_deploy_view,
     tamplate_view,
     vm_group_view,
+    get_kube_config
 )
 
 urlpatterns = [
@@ -90,4 +91,9 @@ urlpatterns = [
         proxmox_hard_drive_cleaning.proxmox_hard_drive_cleaning,
         name="proxmox_hard_drive_cleaning",
     ),
+    url(
+        r"^cluster/get/config$",
+        get_kube_config.get_kube_config,
+        name="cluster_get_config",
+    )
 ]

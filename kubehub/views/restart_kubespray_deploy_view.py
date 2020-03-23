@@ -24,7 +24,7 @@ def restart_kubespray_deploy(request):
         vm_group__instance = VM.objects.filter(vm_group=vm_group_id).values_list('ip', flat=True)
         vms_ip = list(vm_group__instance)
         nomber_of_node = len(vms_ip) + 1
-        virtual_machine_ip = ('' ''.join(vms_ip))
+        virtual_machine_ip = (' '.join(vms_ip))
         cmd = ['./scripts/cluster_create.sh', virtual_machine_ip]
         kubespray_deploy_data = {
             'status': 'deploying',
