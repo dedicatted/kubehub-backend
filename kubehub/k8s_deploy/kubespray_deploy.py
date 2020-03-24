@@ -6,6 +6,7 @@ from ..models.vm_group import VM
 from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
 from ..k8s_deploy.deploy_log_file_create import create_log_file
+from ..k8s_deploy.ansible_deploy_config import ansible_deploy_config
 from ..k8s_deploy.deploy_log_directory_create import create_deploy_logs_dir
 from ..serializers.k8s_cluster_serializer import KubernetesClusterSerializer
 from ..serializers.kubespray_deploy_serializer import KubesprayDeploySerializer
@@ -19,7 +20,20 @@ def kubespray_deploy(k8s_cluster_id):
     vms_ip = list(vm_group__instance)
     nomber_of_node = len(vms_ip) + 1
     virtual_machine_ip = (" ".join(vms_ip))
-    cmd = ["./scripts/cluster_create.sh", virtual_machine_ip]
+    kubespray_deploy_dir = ansible_deploy_config(
+        k8s_cluster_id=k8s_cluster_id,
+        vm_ips=virtual_machine_ip
+    )
+    cmd = (
+        f'ansible-playbook -i '
+        f'{kubespray_deploy_dir}/inventory/mycluster/hosts.yml '
+        f'--flush-cache '
+        f'--user=ubuntu '
+        f'--extra-vars "ansible_user=ubuntu ansible_password=ubuntu" '
+        f'--become --become-user=root '
+        f'{kubespray_deploy_dir}/cluster.yml'
+    )
+    print(cmd)
     kubespray_deploy_data = {
         'status': "deploying",
         'vm_group': vm_group_id,
@@ -38,7 +52,7 @@ def kubespray_deploy(k8s_cluster_id):
             kubespray_deploy_id=id
         )
         log_fd_open = open(log_fd_create, 'w')
-        deploy = Popen(cmd, stdout=log_fd_open).communicate()[0]
+        deploy = Popen(cmd, shell=True, stdout=log_fd_open).communicate()[0]
         log_fd_open.close()
         log_fd_open_read = open(log_fd_create, 'r')
         contents = log_fd_open_read.read()
