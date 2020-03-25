@@ -33,7 +33,6 @@ def kubespray_deploy(k8s_cluster_id):
         f'--become --become-user=root '
         f'{kubespray_deploy_dir}/cluster.yml'
     )
-    print(cmd)
     kubespray_deploy_data = {
         'status': "deploying",
         'vm_group': vm_group_id,
