@@ -31,6 +31,7 @@ def restart_kubespray_deploy(request):
             vm_ips=virtual_machine_ip
         )
         cmd = (
+            f'ANSIBLE_NOCOWS=1 '
             f'ansible-playbook -i '
             f'{kubespray_deploy_dir}/inventory/mycluster/hosts.yml '
             f'--flush-cache '
