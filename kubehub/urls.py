@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+from .k8s_deploy import choose_kubernetes_version
 from .proxmox import proxmox_hard_drive_cleaning
 from .views import (
     cloud_provider_view,
@@ -11,7 +12,13 @@ from .views import (
     get_kube_config
 )
 
+
 urlpatterns = [
+    url(
+        r"^ansible$",
+        choose_kubernetes_version.choose_kubernetes_version,
+        name="ansible"
+    ),
     url(
         r"^list$",
         cloud_provider_view.cloud_provider_list,
