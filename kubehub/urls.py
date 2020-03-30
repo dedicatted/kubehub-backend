@@ -8,8 +8,10 @@ from .views import (
     restart_kubespray_deploy_view,
     tamplate_view,
     vm_group_view,
-    get_kube_config
+    get_kube_config,
+    kubernetes_version_view
 )
+
 
 urlpatterns = [
     url(
@@ -95,5 +97,20 @@ urlpatterns = [
         r"^cluster/get/config$",
         get_kube_config.get_kube_config,
         name="cluster_get_config",
-    )
+    ),
+    url(
+        r"^kubernetes/version/list$",
+        kubernetes_version_view.kubernetes_version_list,
+        name="kubernetes_version_list"
+    ),
+    url(
+        r"^kubernetes/version/add$",
+        kubernetes_version_view.kubernetes_version_add,
+        name="kubernetes_version_add"
+    ),
+    url(
+        r"^kubernetes/version/remove$",
+        kubernetes_version_view.kubernetes_version_remove,
+        name="kubernetes_version_remove"
+    ),
 ]

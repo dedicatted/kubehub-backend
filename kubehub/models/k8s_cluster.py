@@ -2,12 +2,16 @@ from django.db import models
 from subprocess import check_output
 
 from ..models.vm_group import VMGroup
+from ..models.kubernetes_version import KubernetesVersion
 
 
 class KubernetesCluster(models.Model):
     name_max = int(check_output("getconf NAME_MAX /", shell=True))
     name = models.CharField(max_length=name_max)
-    k8s_version = models.CharField(max_length=name_max)
+    kubernetes_version_id = models.ForeignKey(
+        KubernetesVersion,
+        on_delete=models.CASCADE
+    )
     vm_group = models.OneToOneField(
         VMGroup,
         on_delete=models.CASCADE
@@ -24,6 +28,6 @@ class KubernetesCluster(models.Model):
     readonly_fields = 'k8s_version'
 
     def __str__(self):
-        return f'id: {self.id}, name: {self.name}, k8s_version: {self.k8s_version}, ' \
+        return f'id: {self.id}, name: {self.name}, kubernetes_version_id: {self.kubernetes_version_id}, ' \
                f'vm_group: {self.vm_group}, status: {self.status}'
 
