@@ -9,3 +9,4 @@ def create_k8s_deploy_dir(k8s_cluster_id):
         rmtree(f'/tmp/kubespray_deploy_{k8s_cluster_id}/')
     mkdir(path=deploy_dir)
     return deploy_dir
+
