@@ -16,13 +16,15 @@ def kubespray_deploy(k8s_cluster_id):
     log_dir = create_deploy_logs_dir()
     k8s_cluster_id = KubernetesCluster.objects.get(id=k8s_cluster_id).id
     vm_group_id = KubernetesCluster.objects.get(id=k8s_cluster_id).vm_group.id
+    kubernetes_version = KubernetesCluster.objects.get(id=k8s_cluster_id).kubernetes_version_id.version
     vm_group__instance = VM.objects.filter(vm_group=vm_group_id).values_list('ip', flat=True)
     vms_ip = list(vm_group__instance)
     nomber_of_node = len(vms_ip) + 1
     virtual_machine_ip = (" ".join(vms_ip))
     kubespray_deploy_dir = ansible_deploy_config(
         k8s_cluster_id=k8s_cluster_id,
-        vm_ips=virtual_machine_ip
+        vm_ips=virtual_machine_ip,
+        kubernetes_version=kubernetes_version
     )
     cmd = (
         f'ansible-playbook -i '
