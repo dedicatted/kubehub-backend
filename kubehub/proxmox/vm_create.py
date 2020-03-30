@@ -8,6 +8,8 @@ from ..proxmox.get_vm_node import get_vm_node
 from ..proxmox.vm_clone import vm_clone
 from ..proxmox.vm_start import vm_start
 from ..proxmox.vm_status import vm_status
+from ..proxmox.vm_update import vm_update
+from ..proxmox.vm_upgrade import vm_upgrade
 
 
 def create_vm(data):
@@ -73,4 +75,28 @@ def create_vm(data):
                     vmid=newid),
                 vmid=newid
             )
-            return {"name": data["name"], "vmid": newid, "ip": ip, "cloud_provider_id": cloud_provider_instance.id, "template_id": template_instance.id}
+            vm_update(
+                host=cloud_provider_instance.api_endpoint,
+                password=cloud_provider_instance.password,
+                node=get_vm_node(
+                    host=cloud_provider_instance.api_endpoint,
+                    password=cloud_provider_instance.password,
+                    vmid=newid),
+                vmid=newid
+            )
+            vm_upgrade(
+                host=cloud_provider_instance.api_endpoint,
+                password=cloud_provider_instance.password,
+                node=get_vm_node(
+                    host=cloud_provider_instance.api_endpoint,
+                    password=cloud_provider_instance.password,
+                    vmid=newid),
+                vmid=newid
+            )
+            return {
+                "name": data["name"],
+                "vmid": newid,
+                "ip": ip,
+                "cloud_provider_id": cloud_provider_instance.id,
+                "template_id": template_instance.id
+            }

@@ -27,6 +27,7 @@ def kubespray_deploy(k8s_cluster_id):
         kubernetes_version=kubernetes_version
     )
     cmd = (
+        f'ANSIBLE_HOST_KEY_CHECKING=False '
         f'ansible-playbook -i '
         f'{kubespray_deploy_dir}/inventory/mycluster/hosts.yml '
         f'--flush-cache '

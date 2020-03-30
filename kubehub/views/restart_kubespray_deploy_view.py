@@ -33,6 +33,7 @@ def restart_kubespray_deploy(request):
             kubernetes_version=kubernetes_version
         )
         cmd = (
+            f'ANSIBLE_HOST_KEY_CHECKING=False '
             f'ansible-playbook -i '
             f'{kubespray_deploy_dir}/inventory/mycluster/hosts.yml '
             f'--flush-cache '
@@ -41,6 +42,7 @@ def restart_kubespray_deploy(request):
             f'--become --become-user=root '
             f'{kubespray_deploy_dir}/cluster.yml'
         )
+        print(cmd)
         kubespray_deploy_data = {
             'status': 'deploying',
             'vm_group': vm_group_id,
