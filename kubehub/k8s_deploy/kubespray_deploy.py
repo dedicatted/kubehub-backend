@@ -57,7 +57,8 @@ def kubespray_deploy(k8s_cluster_id):
         log_fd_open.close()
         log_fd_open_read = open(log_fd_create, 'r')
         contents = log_fd_open_read.read()
-        if len(findall("failed=0", contents)) == nomber_of_node:
+        if len(findall("failed=0", contents)) == nomber_of_node and \
+                len(findall("unreachable=0", contents)) == nomber_of_node:
             log_fd_open_read.close()
             kd = status_update(
                 id=id,
