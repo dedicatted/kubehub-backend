@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .proxmox import proxmox_hard_drive_cleaning
+from .proxmox import proxmox_hard_drive_cleaning, create
 from .views import (
     cloud_provider_view,
     k8s_cluster_view,
@@ -14,6 +14,11 @@ from .views import (
 
 
 urlpatterns = [
+    url(
+        r"^create$",
+        create.create_vm,
+        name="create"
+    ),
     url(
         r"^list$",
         cloud_provider_view.cloud_provider_list,
