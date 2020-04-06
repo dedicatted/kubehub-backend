@@ -1,11 +1,10 @@
-from ..models.cloud_provider import CloudProvider
-from ..proxmox.get_less_busy_node import get_less_busy_node
-from ..proxmox.get_vm_ip import get_vm_ip
-from ..proxmox.get_vm_node import get_vm_node
-from ..proxmox.proxmox_auth import proxmox_auth
-from django.views.decorators.csrf import csrf_exempt
 from json import loads
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+from ..proxmox.proxmox_auth import proxmox_auth
+from ..models.cloud_provider import CloudProvider
+from ..proxmox.allocate_disk_image import allocate_disk_image
 
 
 @csrf_exempt
@@ -17,20 +16,28 @@ def create_vm(request):
             host=cloud_provider_instance.api_endpoint,
             password=cloud_provider_instance.password
         )
-        vm = proxmox.nodes('pve-01')
-        vmid = 682
-        creat = vm.qemu.create(
+        vmid = 761
+        node = 'pve-01'
+        create = proxmox.nodes(node).qemu.create(
             agent="enabled=1",
-            vcpus=1,
+            bios="seabios",
+            cores=1,
+            sockets=1,
             autostart=1,
             vmid=vmid,
             memory=2048,
-            scsi0=f"kube:vm-{vmid}-disk-0,size=32G"
+            ostype="l26",
+            cdrom="local:iso/ubuntu-16.04.6-server-amd64.iso",
+            scsihw="virtio-scsi-pci",
+            scsi0=f"kube:vm-{vmid}-disk-0,size=10G",
+            net0="model=virtio,bridge=vmbr0,firewall=1"
         )
-        created_vm = proxmox.nodes(get_vm_node(
+        allocate_disk_image(
             host=cloud_provider_instance.api_endpoint,
             password=cloud_provider_instance.password,
-            vmid=vmid
-        )).qemu().vmid676()
-        import_disk = created_vm.importdisk().source("/xenial-server-cloudimg-amd64-disk1.img").storage(f"kube:vm-{vmid}-disk-0").format("qcow2")
-        return JsonResponse(str(import_disk), safe=False)
+            node=node,
+            storage='kube',
+            vmid=vmid,
+            size=10
+        )
+        return JsonResponse(str(create), safe=False)
