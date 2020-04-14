@@ -1,4 +1,5 @@
 from ..proxmox.proxmox_auth import proxmox_auth
+from ..proxmox.get_task_status import get_task_status
 
 
 def vm_config(host, password, node, vmid):
@@ -15,4 +16,20 @@ def vm_config(host, password, node, vmid):
         cipassword='ubuntu',
         ipconfig0='ip=dhcp'
     )
-    return config
+    config_task_status = get_task_status(
+        host=host,
+        password=password,
+        task=config,
+        node=node
+    )
+    while config_task_status.get('status') == 'running':
+        if config_task_status.get('exitstatus') is None:
+            config_task_status = get_task_status(
+                host=host,
+                password=password,
+                task=config,
+                node=node
+            )
+        else:
+            return config_task_status.get('exitstatus')
+    return True
