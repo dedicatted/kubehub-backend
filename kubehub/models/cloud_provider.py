@@ -16,7 +16,6 @@ class CloudProvider(models.Model):
     password = models.CharField(max_length=name_max)
     readonly_fields = ('cp_type', 'api_endpoint', 'password')
 
-
     def __str__(self):
         return f'cloud_provider_id: {self.id}, name: {self.name}, api_endpoint: {self.api_endpoint}, ' \
                f'password: {self.password}'

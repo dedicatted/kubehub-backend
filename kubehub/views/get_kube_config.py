@@ -2,7 +2,7 @@ from json import loads
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from ..models.vm_group import VM
+from ..models.vm import VM
 from ..proxmox.get_vm_node import get_vm_node
 from ..proxmox.get_file_data import get_file_data
 from ..models.cloud_provider import CloudProvider

@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 
-from ..models.vm_group import VM
+from ..models.vm import VM
 from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
 from ..k8s_deploy.ansible_deploy_config import ansible_deploy_config

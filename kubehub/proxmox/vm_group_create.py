@@ -2,7 +2,7 @@ from multiprocessing.pool import ThreadPool
 
 import multiprocessing
 
-from ..proxmox.vm_create import create_vm
+from ..proxmox.create import create_vm
 from ..proxmox.vmg_create_data_formation import vmg_data_formation
 
 

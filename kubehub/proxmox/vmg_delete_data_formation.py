@@ -1,5 +1,5 @@
 from ..models.cloud_provider import CloudProvider
-from ..models.vm_group import VM
+from ..models.vm import VM
 from ..proxmox.get_vm_node import get_vm_node
 
 

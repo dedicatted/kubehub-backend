@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
-from ..models.vm_group import VM, VMGroup
+from ..models.vm_group import VMGroup
+from ..models.vm import VM
+from ..serializers.vm_serializer import VMSerializer
 
-
-class VMSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VM
-        fields = ('id', 'name', 'vmid', 'ip', 'template', 'cloud_provider')
+#
+# class VMSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = VM
+#         fields = ('id', 'name', 'vmid', 'ip', 'template', 'cloud_provider')
 
 
 class VMGroupSerializer(serializers.ModelSerializer):

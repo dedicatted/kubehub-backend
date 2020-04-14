@@ -2,7 +2,7 @@ from re import findall
 from subprocess import Popen
 from django.forms.models import model_to_dict
 
-from ..models.vm_group import VM
+from ..models.vm import VM
 from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
 from ..k8s_deploy.deploy_log_file_create import create_log_file

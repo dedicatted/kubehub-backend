@@ -1,7 +1,7 @@
 from ..proxmox.proxmox_auth import proxmox_auth
 
 
-def get_newid(host, password, number_of_nodes):
+def get_vmid(host, password, number_of_nodes):
     proxmox = proxmox_auth(
         host=host,
         password=password

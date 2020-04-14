@@ -3,7 +3,8 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 
-from ..models.vm_group import VM, VMGroup
+from ..models.vm import VM
+from ..models.vm_group import VMGroup
 from ..proxmox.vm_group_delete import vm_group_delete
 from ..proxmox.vm_group_create import create_vm_group
 from ..serializers.vm_group_serializer import VMGroupSerializer, VMSerializer
@@ -46,11 +47,14 @@ def vm_group_add(request):
                 'user_id': '1',
                 'status': 'creating',
                 'vms': [{
-                    'name': 'creating',
+                    'name': data['name'],
                     'vmid': '0',
                     'ip': 'creating',
-                    'template': data['template_id'],
-                    'cloud_provider': data['cloud_provider_id']
+                    'cloud_provider': data['cloud_provider_id'],
+                    'cores': data['cores'],
+                    'sockets': data['sockets'],
+                    'memory': data['memory'],
+                    'boot_disk': data['boot_disk'],
                 } for _ in range(int(data['number_of_nodes']))]
             }
             vmgs = VMGroupSerializer(data=virtual_machine_group)
