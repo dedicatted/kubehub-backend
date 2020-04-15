@@ -1,16 +1,12 @@
 from rest_framework import serializers
 
-from ..models.vm_group import VM, VMGroup
+from ..models.vm_group import VMGroup
+from ..models.vm_from_template import VmFromTemplate
+from ..serializers.vm_from_template_serializer import VmFromTemplateSerializer
 
 
-class VMSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VM
-        fields = ('id', 'name', 'vmid', 'ip', 'template', 'cloud_provider')
-
-
-class VMGroupSerializer(serializers.ModelSerializer):
-    vms = VMSerializer(many=True)
+class VmGroupFromTemplateSerializer(serializers.ModelSerializer):
+    vms = VmFromTemplateSerializer(many=True)
 
     class Meta:
         model = VMGroup
@@ -20,7 +16,7 @@ class VMGroupSerializer(serializers.ModelSerializer):
         vms = validated_data.pop('vms')
         vm_group = VMGroup.objects.create(**validated_data)
         for vm in vms:
-            VM.objects.create(vm_group=vm_group, **vm)
+            VmFromTemplate.objects.create(vm_group=vm_group, **vm)
         return vm_group
 
     def update(self, instance, validated_data):

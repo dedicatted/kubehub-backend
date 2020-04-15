@@ -2,7 +2,7 @@ from json import loads
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from ..models.vm_group import VM
+from ..models.vm_from_img import VmFromImage
 from ..proxmox.get_vm_node import get_vm_node
 from ..proxmox.get_file_data import get_file_data
 from ..models.cloud_provider import CloudProvider
@@ -18,7 +18,7 @@ def get_kube_config(request):
         try:
             data = loads(request.body)
             kubernetes_cluster_instance = KubernetesCluster.objects.get(pk=data['kubernetes_cluster_id'])
-            vm_group_instance = VM.objects.get(
+            vm_group_instance = VmFromImage.objects.get(
                 pk=KubernetesCluster.objects.get(pk=data['kubernetes_cluster_id']).vm_group_id
             )
             create_k8s_config_file_dir()
