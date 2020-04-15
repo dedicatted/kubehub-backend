@@ -3,11 +3,16 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 
-from ..models.vm import VM
+from ..models.vm_from_img import VmFromImage
+from ..models.vm_from_template import VmFromTemplate
 from ..models.vm_group import VMGroup
 from ..proxmox.vm_group_delete import vm_group_delete
-from ..proxmox.vm_group_create import create_vm_group
-from ..serializers.vm_group_serializer import VMGroupSerializer, VMSerializer
+from ..proxmox.vmg_create_from_img import create_vm_group_from_img
+from ..proxmox.vmg_create_from_template import create_vm_group_from_template
+from ..serializers.vm_from_img_serializer import VmFromImageSerializer
+from ..serializers.vm_group_from_img_serializer import VmGroupFromImageSerializer
+from ..serializers.vm_from_template_serializer import VmFromTemplateSerializer
+from ..serializers.vm_group_from_template_serializer import VmGroupFromTemplateSerializer
 
 
 @csrf_exempt
@@ -16,7 +21,9 @@ def vm_group_list(request):
         try:
             vm_groups = []
             for vm_group in VMGroup.objects.all():
-                vm_list = VM.objects.filter(vm_group=vm_group)
+                template_based_vm_list = VmFromTemplate.objects.filter(vm_group=vm_group)
+                image_based_vm_list = VmFromImage.objects.filter(vm_group=vm_group)
+                vm_list = list(template_based_vm_list) + list(image_based_vm_list)
                 vmg_dict = model_to_dict(vm_group)
                 vmg_dict['vms'] = [model_to_dict(vm) for vm in vm_list]
                 vm_groups.append(vmg_dict)
@@ -42,53 +49,90 @@ def vm_group_add(request):
     if request.method == 'POST':
         try:
             data = loads(request.body)
-            virtual_machine_group = {
-                'name': data['name'],
-                'user_id': '1',
-                'status': 'creating',
-                'vms': [{
+            if 'template_id' not in data:
+                virtual_machine_group = {
                     'name': data['name'],
-                    'vmid': '0',
-                    'ip': 'creating',
-                    'cloud_provider': data['cloud_provider_id'],
-                    'cores': data['cores'],
-                    'sockets': data['sockets'],
-                    'memory': data['memory'],
-                    'boot_disk': data['boot_disk'],
-                } for _ in range(int(data['number_of_nodes']))]
-            }
-            vmgs = VMGroupSerializer(data=virtual_machine_group)
-            if vmgs.is_valid():
-                created_group = vmgs.create(vmgs.validated_data)
-                pk = created_group.id
-                try:
-                    vmg_list = create_vm_group(data)
-                    vms_update(
-                        pk=pk,
-                        vms=vmg_list
-                    )
-                    vmg = status_update(
-                        pk=pk,
-                        status='running'
-                    )
-                    return JsonResponse({'data': vmg})
-                except Exception as e:
-                    status_update(
-                        pk=pk,
-                        status='error'
-                    )
-                    return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+                    'user_id': '1',
+                    'status': 'creating',
+                    'vms': [{
+                        'name': data['name'],
+                        'vmid': '0',
+                        'ip': 'creating',
+                        'cloud_provider': data['cloud_provider_id'],
+                        'cores': data['cores'],
+                        'sockets': data['sockets'],
+                        'memory': data['memory'],
+                        'boot_disk': data['boot_disk'],
+                    } for _ in range(int(data['number_of_nodes']))]
+                }
+                vmgs = VmGroupFromImageSerializer(data=virtual_machine_group)
+                if vmgs.is_valid():
+                    created_group = vmgs.create(vmgs.validated_data)
+                    pk = created_group.id
+                    try:
+                        vmg_list = create_vm_group_from_img(data)
+                        image_based_vms_update(
+                            pk=pk,
+                            vms=vmg_list
+                        )
+                        vmg = image_based_vm_status_update(
+                            pk=pk,
+                            status='running'
+                        )
+                        return JsonResponse({'data': vmg})
+                    except Exception as e:
+                        image_based_vm_status_update(
+                            pk=pk,
+                            status='error'
+                        )
+                        return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+                else:
+                    return JsonResponse({'errors': vmgs.errors})
             else:
-                return JsonResponse({'errors': vmgs.errors})
+                virtual_machine_group = {
+                    'name': data['name'],
+                    'user_id': '1',
+                    'status': 'creating',
+                    'vms': [{
+                        'name': 'creating',
+                        'vmid': '0',
+                        'ip': 'creating',
+                        'template': data['template_id'],
+                        'cloud_provider': data['cloud_provider_id']
+                    } for _ in range(int(data['number_of_nodes']))]
+                }
+                vmgs = VmGroupFromTemplateSerializer(data=virtual_machine_group)
+                if vmgs.is_valid():
+                    created_group = vmgs.create(vmgs.validated_data)
+                    pk = created_group.id
+                    try:
+                        vmg_list = create_vm_group_from_template(data)
+                        template_based_vms_update(
+                            pk=pk,
+                            vms=vmg_list
+                        )
+                        vmg = template_based_vm_status_update(
+                            pk=pk,
+                            status='running'
+                        )
+                        return JsonResponse({'data': vmg})
+                    except Exception as e:
+                        template_based_vm_status_update(
+                            pk=pk,
+                            status='error'
+                        )
+                        return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+                else:
+                    return JsonResponse({'errors': vmgs.errors})
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
-def vms_update(pk, vms):
-    vms_instance = VM.objects.filter(vm_group__id=pk)
+def image_based_vms_update(pk, vms):
+    vms_instance = VmFromImage.objects.filter(vm_group__id=pk)
     updated_vms = []
     for instance, vm in zip(list(vms_instance), vms):
-        vm_serializer = VMSerializer(data=vm, partial=True)
+        vm_serializer = VmFromImageSerializer(data=vm, partial=True)
         if vm_serializer.is_valid():
             vm = vm_serializer.update(instance, vm_serializer.validated_data)
             updated_vms.append(model_to_dict(vm))
@@ -97,10 +141,32 @@ def vms_update(pk, vms):
     return updated_vms
 
 
-def status_update(pk, status):
+def template_based_vms_update(pk, vms):
+    vms_instance = VmFromTemplate.objects.filter(vm_group__id=pk)
+    updated_vms = []
+    for instance, vm in zip(list(vms_instance), vms):
+        vm_serializer = VmFromTemplateSerializer(data=vm, partial=True)
+        if vm_serializer.is_valid():
+            vm = vm_serializer.update(instance, vm_serializer.validated_data)
+            updated_vms.append(model_to_dict(vm))
+        else:
+            print(vm_serializer.errors)
+    return updated_vms
+
+
+def image_based_vm_status_update(pk, status):
     instance = VMGroup.objects.get(pk=pk)
     data = {'status': status}
-    vmgs = VMGroupSerializer(data=data, partial=True)
+    vmgs = VmGroupFromImageSerializer(data=data, partial=True)
+    if vmgs.is_valid():
+        vmg = vmgs.update(instance, vmgs.validated_data)
+        return model_to_dict(vmg)
+
+
+def template_based_vm_status_update(pk, status):
+    instance = VMGroup.objects.get(pk=pk)
+    data = {'status': status}
+    vmgs = VmGroupFromTemplateSerializer(data=data, partial=True)
     if vmgs.is_valid():
         vmg = vmgs.update(instance, vmgs.validated_data)
         return model_to_dict(vmg)
@@ -113,10 +179,10 @@ def vm_group_remove(request):
             data = loads(request.body)
             pk = data.get('vm_group_id')
             try:
-                status_update(pk, 'removing')
+                image_based_vm_status_update(pk, 'removing')
                 delete = vm_group_delete(data)
                 if delete:
-                    status_update(
+                    image_based_vm_status_update(
                         pk=pk,
                         status='removed'
                     )
@@ -124,7 +190,7 @@ def vm_group_remove(request):
                     instance.delete()
                     return JsonResponse({'deleted': model_to_dict(instance)})
             except Exception as e:
-                status_update(
+                image_based_vm_status_update(
                     pk=pk,
                     status='error'
                 )

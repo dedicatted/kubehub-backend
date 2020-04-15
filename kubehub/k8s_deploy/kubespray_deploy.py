@@ -2,7 +2,7 @@ from re import findall
 from subprocess import Popen
 from django.forms.models import model_to_dict
 
-from ..models.vm import VM
+from ..models.vm_from_img import VmFromImage
 from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
 from ..k8s_deploy.deploy_log_file_create import create_log_file
@@ -17,7 +17,7 @@ def kubespray_deploy(k8s_cluster_id):
     k8s_cluster_id = KubernetesCluster.objects.get(id=k8s_cluster_id).id
     vm_group_id = KubernetesCluster.objects.get(id=k8s_cluster_id).vm_group.id
     kubernetes_version = KubernetesCluster.objects.get(id=k8s_cluster_id).kubernetes_version_id.version
-    vm_group__instance = VM.objects.filter(vm_group=vm_group_id).values_list('ip', flat=True)
+    vm_group__instance = VmFromImage.objects.filter(vm_group=vm_group_id).values_list('ip', flat=True)
     vms_ip = list(vm_group__instance)
     nomber_of_node = len(vms_ip) + 1
     virtual_machine_ip = (" ".join(vms_ip))

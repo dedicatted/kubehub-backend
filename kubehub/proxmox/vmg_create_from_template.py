@@ -2,11 +2,11 @@ from multiprocessing.pool import ThreadPool
 
 import multiprocessing
 
-from ..proxmox.create import create_vm
+from ..proxmox.vm_create_from_template import create_vm_from_template
 from ..proxmox.vmg_create_data_formation import vmg_data_formation
 
 
-def create_vm_group(data):
+def create_vm_group_from_template(data):
     number_of_cores = multiprocessing.cpu_count()
     pool = ThreadPool(number_of_cores)
-    return pool.map(create_vm, vmg_data_formation(data))
+    return pool.map(create_vm_from_template, vmg_data_formation(data))

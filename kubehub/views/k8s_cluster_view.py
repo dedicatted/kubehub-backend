@@ -8,7 +8,7 @@ from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
 from ..proxmox.vm_group_delete import vm_group_delete
 from ..k8s_deploy.kubespray_deploy import kubespray_deploy
-from ..serializers.vm_group_serializer import VMGroupSerializer
+from ..serializers.vm_group_from_img_serializer import VmGroupFromImageSerializer
 from ..serializers.k8s_cluster_serializer import KubernetesClusterSerializer
 
 
@@ -117,7 +117,7 @@ def k8s_cluster_status_update(pk, status):
 def vm_group_status_update(pk, status):
     instance = VMGroup.objects.get(pk=pk)
     data = {'status': status}
-    vmgs = VMGroupSerializer(data=data, partial=True)
+    vmgs = VmGroupFromImageSerializer(data=data, partial=True)
     if vmgs.is_valid():
         vmg = vmgs.update(instance, vmgs.validated_data)
         return model_to_dict(vmg)
