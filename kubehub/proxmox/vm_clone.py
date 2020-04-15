@@ -1,4 +1,5 @@
 from ..proxmox.proxmox_auth import proxmox_auth
+from ..proxmox.get_task_status import get_task_status
 
 
 def vm_clone(host, password, node, vmid, newid, name, target):
@@ -14,4 +15,20 @@ def vm_clone(host, password, node, vmid, newid, name, target):
         storage='kube',
         target=target
     )
-    return clone
+    clone_task_status = get_task_status(
+        host=host,
+        password=password,
+        task=clone,
+        node=node
+    )
+    while clone_task_status.get('status') == 'running':
+        if clone_task_status.get('exitstatus') is None:
+            clone_task_status = get_task_status(
+                host=host,
+                password=password,
+                task=clone,
+                node=node
+            )
+        else:
+            return clone_task_status.get('exitstatus')
+    return True
