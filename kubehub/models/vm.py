@@ -1,7 +1,7 @@
 from django.db import models
 from subprocess import check_output
 
-from ..models.cloud_provider import CloudProvider
+from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 from ..models.vm_group import VMGroup
 
 
@@ -13,7 +13,7 @@ class VM(models.Model):
     name = models.CharField(max_length=name_max)
     vmid = models.IntegerField()
     ip = models.CharField(max_length=name_max)
-    cloud_provider = models.ForeignKey(CloudProvider, on_delete=models.PROTECT, related_name="vms")
+    cloud_provider = models.ForeignKey(ProxmoxCloudProvider, on_delete=models.PROTECT, related_name="vms")
     readonly_fields = ('vm_group_id', 'name', 'vmid', 'ip', 'cloud_provider')
 
     def __str__(self):

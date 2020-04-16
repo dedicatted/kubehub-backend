@@ -1,6 +1,6 @@
 import time
 
-from ..models.cloud_provider import CloudProvider
+from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 from ..models.template import Template
 from ..proxmox.get_less_busy_node import get_less_busy_node
 from ..proxmox.get_vm_ip import get_vm_ip
@@ -13,7 +13,7 @@ from ..proxmox.vm_upgrade import vm_upgrade
 
 
 def create_vm_from_template(data):
-    cloud_provider_instance = CloudProvider.objects.get(pk=data['cloud_provider_id'])
+    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
     template_instance = Template.objects.get(pk=data['template_id'])
     newid = data["vmid"]
     clone = vm_clone(

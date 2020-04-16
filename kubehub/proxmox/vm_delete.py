@@ -2,14 +2,14 @@ from django.http import JsonResponse
 
 import time
 
-from ..models.cloud_provider import CloudProvider
+from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 from ..proxmox.proxmox_auth import proxmox_auth
 from ..proxmox.vm_status import vm_status
 from ..proxmox.vm_stop import vm_stop
 
 
 def vm_delete(data):
-    cloud_provider_instance = CloudProvider.objects.get(pk=data['cloud_provider_id'])
+    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
     proxmox = proxmox_auth(
         host=cloud_provider_instance.api_endpoint,
         password=cloud_provider_instance.password

@@ -8,12 +8,12 @@ from ..proxmox.vm_migrate import vm_migrate
 from ..proxmox.get_vm_node import get_vm_node
 from ..proxmox.vm_move_disk import vm_move_disk
 from ..proxmox.vm_disk_resize import resize_disk
-from ..models.cloud_provider import CloudProvider
 from ..proxmox.vm_create_set_up import vm_create_set_up
+from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 
 
 def create_vm_from_img(data):
-    cloud_provider_instance = CloudProvider.objects.get(pk=data['cloud_provider_id'])
+    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
     vmid = data["vmid"]
     node = get_vm_node(
         host=cloud_provider_instance.api_endpoint,
@@ -29,7 +29,7 @@ def create_vm_from_img(data):
         name=data['name'],
         node=node,
         vmid=vmid,
-        storage='kube'
+        storage=cloud_provider_instance.shared_storage_name
     )
     if set_up_vm:
         config = vm_config(
@@ -48,7 +48,7 @@ def create_vm_from_img(data):
                     vmid=vmid
                 ),
                 vmid=vmid,
-                storage='kube'
+                storage=cloud_provider_instance.shared_storage_name
             )
             if move_disk:
                 migrate = vm_migrate(

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from json import loads
 from time import sleep
 
-from ..models.cloud_provider import CloudProvider
+from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 from ..proxmox.proxmox_auth import proxmox_auth
 from ..proxmox.get_vm_node import get_vm_node
 
@@ -12,7 +12,7 @@ from ..proxmox.get_vm_node import get_vm_node
 def proxmox_hard_drive_cleaning(request):
     if request.method == 'POST':
         data = loads(request.body)
-        cloud_provider_instance = CloudProvider.objects.get(pk=data['cloud_provider_id'])
+        cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
         vmid_list = list(range(int(data['from']), int(data['to'])))
         proxmox = proxmox_auth(
             host=cloud_provider_instance.api_endpoint,
