@@ -9,7 +9,8 @@ from .views import (
     tamplate_view,
     vm_group_view,
     get_kube_config,
-    kubernetes_version_view
+    kubernetes_version_view,
+    os_image_view
 )
 
 
@@ -113,4 +114,19 @@ urlpatterns = [
         kubernetes_version_view.kubernetes_version_remove,
         name="kubernetes_version_remove"
     ),
+    url(
+        r"^vm/os-image/list$",
+        os_image_view.os_image_list,
+        name="os_image_list"
+    ),
+    url(
+        r"^vm/os-image/add$",
+        os_image_view.os_image_add,
+        name="os_image_add"
+    ),
+    url(
+        r"^vm/os-image/remove$",
+        os_image_view.os_image_remove,
+        name="os_image_remove"
+    )
 ]
