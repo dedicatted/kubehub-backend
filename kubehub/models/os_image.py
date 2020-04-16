@@ -64,3 +64,6 @@ class OsImage(models.Model):
                f'bios: {self.bios}, scsi_controller_model: {self.scsi_controller_model},' \
                f'storage: {self.storage}'
 
+
+
+

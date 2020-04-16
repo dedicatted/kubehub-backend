@@ -5,7 +5,7 @@ from ..models.cloud_provider import CloudProvider
 
 
 class ProxmoxCloudProvider(CloudProvider):
-    name_max = int(check_output("getconf NAME_MAX /", shell=True))
+    name_max = int(check_output('getconf NAME_MAX /', shell=True))
     shared_storage_name = models.CharField(max_length=name_max)
     readonly_fields = 'shared_storage_name'
 

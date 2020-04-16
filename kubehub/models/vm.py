@@ -8,7 +8,7 @@ from ..models.vm_group import VMGroup
 class VM(models.Model):
     class Meta:
         abstract = True
-    name_max = int(check_output("getconf NAME_MAX /", shell=True))
+    name_max = int(check_output('getconf NAME_MAX /', shell=True))
     vm_group = models.ForeignKey(VMGroup, on_delete=models.CASCADE, related_name="vms")
     name = models.CharField(max_length=name_max)
     vmid = models.IntegerField()
@@ -73,3 +73,7 @@ class VM(models.Model):
         return f'id: {self.id}, vm_group_id: {self.vm_group.id} name: {self.name}, vmid: {self.vmid}, ip: {self.ip}, ' \
                f'cloud_provider: {self.cloud_provider}, cores: {self.cores}, sockets: {self.sockets}, ' \
                f'memory: {self.memory}, boot_disk: {self.boot_disk},'
+
+
+
+

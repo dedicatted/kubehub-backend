@@ -1,10 +1,9 @@
 from django.db import models
-
-import subprocess
+from subprocess import check_output
 
 
 class Template(models.Model):
-    name_max = int(subprocess.check_output("getconf NAME_MAX /", shell=True))
+    name_max = int(check_output('getconf NAME_MAX /', shell=True))
     name = models.CharField(max_length=name_max)
     vmid = models.IntegerField(unique=True)
     diskread = models.IntegerField()
@@ -32,3 +31,4 @@ class Template(models.Model):
                f'cpu: {self.cpu}, diskwrite: {self.diskwrite}, maxcpu: {self.maxcpu}, type: {self.type}, ' \
                f'netin: {self.netin}, maxdisk: {self.maxdisk}, mem: {self.mem}, maxmem: {self.maxmem}, ' \
                f'netout: {self.netout}, uptime: {self.uptime}'
+

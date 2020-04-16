@@ -8,7 +8,7 @@ class VmFromImage(VM):
     os_image = models.ForeignKey(
         to=OsImage,
         on_delete=models.PROTECT,
-        related_name="vms",
+        related_name='vms',
         default=0
     )
     readonly_fields = 'os_image'

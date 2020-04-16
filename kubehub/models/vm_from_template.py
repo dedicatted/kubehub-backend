@@ -8,11 +8,12 @@ class VmFromTemplate(VM):
     template = models.ForeignKey(
         to=Template,
         on_delete=models.PROTECT,
-        related_name="vms",
+        related_name='vms',
         default=0
     )
     readonly_fields = 'template'
 
     def __str__(self):
         return f'id: {self.id}, template: {self.template}'
+
 

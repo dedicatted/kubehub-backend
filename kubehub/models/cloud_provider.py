@@ -5,7 +5,7 @@ from subprocess import check_output
 class CloudProvider(models.Model):
     class Meta:
         abstract = True
-    name_max = int(check_output("getconf NAME_MAX /", shell=True))
+    name_max = int(check_output('getconf NAME_MAX /', shell=True))
     CP_TYPES = (
         ('Proxmox', 'Proxmox'),
         ('AWS', 'AWS'),
@@ -20,3 +20,5 @@ class CloudProvider(models.Model):
     def __str__(self):
         return f'id: {self.id}, name: {self.name}, api_endpoint: {self.api_endpoint}, ' \
                f'password: {self.password}'
+
+
