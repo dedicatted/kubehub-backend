@@ -2,19 +2,15 @@ from ..proxmox.proxmox_auth import proxmox_auth
 from ..proxmox.get_task_status import get_task_status
 
 
-def vm_config(host, password, img_vmid, img_storage, node, vmid):
+def vm_from_template_config(host, password, node, cores, sockets, vmid, memory):
     proxmox = proxmox_auth(
         host=host,
         password=password
     )
     config = proxmox.nodes(node).qemu(vmid).config().create(
-        scsi0=f'{img_storage}:{img_vmid}/vm-{img_vmid}-disk-0.qcow2',
-        boot='c',
-        bootdisk='scsi0',
-        serial0="socket",
-        vga='serial0',
-        cipassword='ubuntu',
-        ipconfig0='ip=dhcp'
+        cores=cores,
+        sockets=sockets,
+        memory=memory,
     )
     config_task_status = get_task_status(
         host=host,

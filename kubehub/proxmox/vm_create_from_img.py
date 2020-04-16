@@ -1,6 +1,5 @@
 from ..models.os_image import OsImage
 from ..proxmox.vm_start import vm_start
-from ..proxmox.vm_config import vm_config
 from ..proxmox.get_vm_ip import get_vm_ip
 from ..proxmox.vm_status import vm_status
 from ..proxmox.vm_update import vm_update
@@ -10,6 +9,7 @@ from ..proxmox.get_vm_node import get_vm_node
 from ..proxmox.vm_move_disk import vm_move_disk
 from ..proxmox.vm_disk_resize import resize_disk
 from ..proxmox.vm_create_set_up import vm_create_set_up
+from ..proxmox.vm_from_img_config import vm_from_img_config
 from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 
 
@@ -39,7 +39,7 @@ def create_vm_from_img(data):
 
     )
     if set_up_vm:
-        config = vm_config(
+        config = vm_from_img_config(
             host=cloud_provider_instance.api_endpoint,
             password=cloud_provider_instance.password,
             node=node,
@@ -75,6 +75,7 @@ def create_vm_from_img(data):
                             vmid=vmid
                         ),
                         vmid=vmid,
+                        disk=data['disk_type'],
                         size=data['boot_disk']
                     )
                     start = vm_start(

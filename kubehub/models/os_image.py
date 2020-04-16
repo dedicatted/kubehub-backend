@@ -55,7 +55,8 @@ class OsImage(models.Model):
         choices=SCSI_CONTROLLER_MODEL_CHOICES,
         default='virtio-scsi-pci'
     )
-    storage = models.CharField(max_length=name_max)
+
+    storage = models.CharField(max_length=name_max, default='local')
     readonly_fields = ('name', 'vmid', 'os_type', 'bios', 'scsi_controller_model', 'storage')
 
     def __str__(self):

@@ -63,6 +63,7 @@ def vm_group_add(request):
                         'sockets': data['sockets'],
                         'memory': data['memory'],
                         'boot_disk': data['boot_disk'],
+                        'disk_type': data['disk_type'],
                         'os_image': data['os_image_id']
                     } for _ in range(int(data['number_of_nodes']))]
                 }
@@ -98,7 +99,12 @@ def vm_group_add(request):
                         'name': 'creating',
                         'vmid': '0',
                         'ip': 'creating',
+                        'cores': data['cores'],
+                        'sockets': data['sockets'],
+                        'memory': data['memory'],
+                        'boot_disk': data['boot_disk'],
                         'template': data['template_id'],
+                        'disk_type': data['disk_type'],
                         'cloud_provider': data['cloud_provider_id']
                     } for _ in range(int(data['number_of_nodes']))]
                 }
