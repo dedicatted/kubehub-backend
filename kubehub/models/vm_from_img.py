@@ -1,6 +1,7 @@
 from django.db import models
 
 from ..models.vm import VM
+from ..models.os_image import OsImage
 
 
 class VmFromImage(VM):
@@ -30,10 +31,11 @@ class VmFromImage(VM):
         (128, 128)
     )
     boot_disk = models.IntegerField(choices=BOOT_DISK_CHOICES)
+    os_image = models.ForeignKey(OsImage, on_delete=models.PROTECT, related_name="vms")
     readonly_fields = ('cores', 'sockets', 'memory', 'boot_disk')
 
     def __str__(self):
         return f'id: {self.id}, cores: {self.cores}, sockets: {self.sockets}, ' \
-               f'memory: {self.memory}, boot_disk: {self.boot_disk}'
+               f'memory: {self.memory}, boot_disk: {self.boot_disk}, os_image: {self.os_image}'
 
 
