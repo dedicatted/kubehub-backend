@@ -25,7 +25,10 @@ def create_vm_from_template(data):
         name=data["name"],
         target=get_less_busy_node(
             host=cloud_provider_instance.api_endpoint,
-            password=cloud_provider_instance.password)
+            password=cloud_provider_instance.password
+        ),
+        shared_storage_name=cloud_provider_instance.shared_storage_name
+
     )
     if clone:
         start = vm_start(

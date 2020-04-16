@@ -63,6 +63,7 @@ def vm_group_add(request):
                         'sockets': data['sockets'],
                         'memory': data['memory'],
                         'boot_disk': data['boot_disk'],
+                        'os_image': data['os_image_id']
                     } for _ in range(int(data['number_of_nodes']))]
                 }
                 vmgs = VmGroupFromImageSerializer(data=virtual_machine_group)

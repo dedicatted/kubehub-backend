@@ -1,3 +1,4 @@
+from ..models.os_image import OsImage
 from ..proxmox.vm_start import vm_start
 from ..proxmox.vm_config import vm_config
 from ..proxmox.get_vm_ip import get_vm_ip
@@ -14,11 +15,12 @@ from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 
 def create_vm_from_img(data):
     cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
+    os_image_instance = OsImage.objects.get(pk=data['os_image_id'])
     vmid = data["vmid"]
     node = get_vm_node(
         host=cloud_provider_instance.api_endpoint,
         password=cloud_provider_instance.password,
-        vmid=9999
+        vmid=os_image_instance.vmid
     )
     set_up_vm = vm_create_set_up(
         host=cloud_provider_instance.api_endpoint,
@@ -29,14 +31,21 @@ def create_vm_from_img(data):
         name=data['name'],
         node=node,
         vmid=vmid,
-        storage=cloud_provider_instance.shared_storage_name
+        storage=cloud_provider_instance.shared_storage_name,
+        agent=os_image_instance.agent,
+        bios=os_image_instance.bios,
+        ostype=os_image_instance.os_type,
+        scsihw=os_image_instance.scsi_controller_model
+
     )
     if set_up_vm:
         config = vm_config(
             host=cloud_provider_instance.api_endpoint,
             password=cloud_provider_instance.password,
             node=node,
-            vmid=vmid
+            vmid=vmid,
+            img_vmid=os_image_instance.vmid,
+            img_storage=os_image_instance.storage
         )
         if config:
             move_disk = vm_move_disk(
