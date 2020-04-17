@@ -1,10 +1,11 @@
 from django.db import models
-
-import subprocess
+from subprocess import check_output
 
 
 class CloudProvider(models.Model):
-    name_max = int(subprocess.check_output("getconf NAME_MAX /", shell=True))
+    class Meta:
+        abstract = True
+    name_max = int(check_output('getconf NAME_MAX /', shell=True))
     CP_TYPES = (
         ('Proxmox', 'Proxmox'),
         ('AWS', 'AWS'),
@@ -17,5 +18,7 @@ class CloudProvider(models.Model):
     readonly_fields = ('cp_type', 'api_endpoint', 'password')
 
     def __str__(self):
-        return f'cloud_provider_id: {self.id}, name: {self.name}, api_endpoint: {self.api_endpoint}, ' \
+        return f'id: {self.id}, name: {self.name}, api_endpoint: {self.api_endpoint}, ' \
                f'password: {self.password}'
+
+

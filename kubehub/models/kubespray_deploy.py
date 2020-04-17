@@ -6,7 +6,7 @@ from ..models.k8s_cluster import KubernetesCluster
 
 
 class KubesprayDeploy(models.Model):
-    name_max = int(check_output("getconf NAME_MAX /", shell=True))
+    name_max = int(check_output('getconf NAME_MAX /', shell=True))
     k8s_cluster = models.ForeignKey(KubernetesCluster, on_delete=models.CASCADE, related_name="kubespray_deployments")
     statuses = (
         ('deploying', 'deploying'),
@@ -19,4 +19,6 @@ class KubesprayDeploy(models.Model):
 
     def __str__(self):
         return f'id: {self.id}, status: {self.status}, vm_group: {self.vm_group}, k8s_cluster_id: {self.k8s_cluster.id}'
+
+
 

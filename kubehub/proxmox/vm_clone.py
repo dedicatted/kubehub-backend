@@ -2,7 +2,7 @@ from ..proxmox.proxmox_auth import proxmox_auth
 from ..proxmox.get_task_status import get_task_status
 
 
-def vm_clone(host, password, node, vmid, newid, name, target):
+def vm_clone(host, password, node, vmid, newid, name, shared_storage_name, target):
     proxmox = proxmox_auth(
         host=host,
         password=password
@@ -12,7 +12,7 @@ def vm_clone(host, password, node, vmid, newid, name, target):
         newid=newid,
         full='1',
         name=name,
-        storage='kube',
+        storage=shared_storage_name,
         target=target
     )
     clone_task_status = get_task_status(

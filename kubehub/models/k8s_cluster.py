@@ -6,7 +6,7 @@ from ..models.kubernetes_version import KubernetesVersion
 
 
 class KubernetesCluster(models.Model):
-    name_max = int(check_output("getconf NAME_MAX /", shell=True))
+    name_max = int(check_output('getconf NAME_MAX /', shell=True))
     name = models.CharField(max_length=name_max)
     kubernetes_version_id = models.ForeignKey(
         KubernetesVersion,
@@ -30,4 +30,5 @@ class KubernetesCluster(models.Model):
     def __str__(self):
         return f'id: {self.id}, name: {self.name}, kubernetes_version_id: {self.kubernetes_version_id}, ' \
                f'vm_group: {self.vm_group}, status: {self.status}'
+
 

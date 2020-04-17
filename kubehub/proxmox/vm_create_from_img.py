@@ -1,5 +1,5 @@
+from ..models.os_image import OsImage
 from ..proxmox.vm_start import vm_start
-from ..proxmox.vm_config import vm_config
 from ..proxmox.get_vm_ip import get_vm_ip
 from ..proxmox.vm_status import vm_status
 from ..proxmox.vm_update import vm_update
@@ -8,17 +8,19 @@ from ..proxmox.vm_migrate import vm_migrate
 from ..proxmox.get_vm_node import get_vm_node
 from ..proxmox.vm_move_disk import vm_move_disk
 from ..proxmox.vm_disk_resize import resize_disk
-from ..models.cloud_provider import CloudProvider
 from ..proxmox.vm_create_set_up import vm_create_set_up
+from ..proxmox.vm_from_img_config import vm_from_img_config
+from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 
 
 def create_vm_from_img(data):
-    cloud_provider_instance = CloudProvider.objects.get(pk=data['cloud_provider_id'])
+    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
+    os_image_instance = OsImage.objects.get(pk=data['os_image_id'])
     vmid = data["vmid"]
     node = get_vm_node(
         host=cloud_provider_instance.api_endpoint,
         password=cloud_provider_instance.password,
-        vmid=9999
+        vmid=os_image_instance.vmid
     )
     set_up_vm = vm_create_set_up(
         host=cloud_provider_instance.api_endpoint,
@@ -29,14 +31,21 @@ def create_vm_from_img(data):
         name=data['name'],
         node=node,
         vmid=vmid,
-        storage='kube'
+        storage=cloud_provider_instance.shared_storage_name,
+        agent=os_image_instance.agent,
+        bios=os_image_instance.bios,
+        ostype=os_image_instance.os_type,
+        scsihw=os_image_instance.scsi_controller_model
+
     )
     if set_up_vm:
-        config = vm_config(
+        config = vm_from_img_config(
             host=cloud_provider_instance.api_endpoint,
             password=cloud_provider_instance.password,
             node=node,
-            vmid=vmid
+            vmid=vmid,
+            img_vmid=os_image_instance.vmid,
+            img_storage=os_image_instance.storage
         )
         if config:
             move_disk = vm_move_disk(
@@ -48,7 +57,7 @@ def create_vm_from_img(data):
                     vmid=vmid
                 ),
                 vmid=vmid,
-                storage='kube'
+                storage=cloud_provider_instance.shared_storage_name
             )
             if move_disk:
                 migrate = vm_migrate(
@@ -66,6 +75,7 @@ def create_vm_from_img(data):
                             vmid=vmid
                         ),
                         vmid=vmid,
+                        disk=data['disk_type'],
                         size=data['boot_disk']
                     )
                     start = vm_start(

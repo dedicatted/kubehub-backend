@@ -2,36 +2,37 @@ from django.conf.urls import url
 
 from .proxmox import proxmox_hard_drive_cleaning
 from .views import (
-    cloud_provider_view,
+    proxmox_cloud_provider_view,
     k8s_cluster_view,
     get_deploy_logs,
     restart_kubespray_deploy_view,
     tamplate_view,
     vm_group_view,
     get_kube_config,
-    kubernetes_version_view
+    kubernetes_version_view,
+    os_image_view
 )
 
 
 urlpatterns = [
     url(
         r"^list$",
-        cloud_provider_view.cloud_provider_list,
+        proxmox_cloud_provider_view.proxmox_cloud_provider_list,
         name="cloud_provider_list"
     ),
     url(
         r"^add$",
-        cloud_provider_view.cloud_provider_add,
+        proxmox_cloud_provider_view.proxmox_cloud_provider_add,
         name="cloud_provider_add"
     ),
     url(
         r"^remove$",
-        cloud_provider_view.cloud_provider_remove,
+        proxmox_cloud_provider_view.proxmox_cloud_provider_remove,
         name="cloud_provider_remove"
     ),
     url(
         r"^edit$",
-        cloud_provider_view.cloud_provider_edit,
+        proxmox_cloud_provider_view.proxmox_cloud_provider_edit,
         name="cloud_provider_edit"
     ),
     url(
@@ -113,4 +114,19 @@ urlpatterns = [
         kubernetes_version_view.kubernetes_version_remove,
         name="kubernetes_version_remove"
     ),
+    url(
+        r"^vm/os-image/list$",
+        os_image_view.os_image_list,
+        name="os_image_list"
+    ),
+    url(
+        r"^vm/os-image/add$",
+        os_image_view.os_image_add,
+        name="os_image_add"
+    ),
+    url(
+        r"^vm/os-image/remove$",
+        os_image_view.os_image_remove,
+        name="os_image_remove"
+    )
 ]

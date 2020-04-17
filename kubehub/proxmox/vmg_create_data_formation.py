@@ -1,9 +1,9 @@
-from ..models.cloud_provider import CloudProvider
+from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 from ..proxmox.get_vmid import get_vmid
 
 
 def vmg_data_formation(data):
-    cloud_provider_instance = CloudProvider.objects.get(pk=data['cloud_provider_id'])
+    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
     data_list = []
     for vmid in get_vmid(
             host=cloud_provider_instance.api_endpoint,

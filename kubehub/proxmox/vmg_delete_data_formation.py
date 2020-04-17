@@ -1,4 +1,4 @@
-from ..models.cloud_provider import CloudProvider
+from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 from ..models.vm_from_img import VmFromImage
 from ..models.vm_from_template import VmFromTemplate
 from ..proxmox.get_vm_node import get_vm_node
@@ -10,7 +10,7 @@ def vmg_delete_data_formation(data):
         vm_group_vms_list = VmFromTemplate.objects.filter(vm_group=data['vm_group_id'])
     cloud_provider = vm_group_vms_list.values_list('cloud_provider_id', flat=True)
     print(cloud_provider)
-    cloud_provider_instance = CloudProvider.objects.get(pk=cloud_provider[0])
+    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=cloud_provider[0])
     vms_list = vm_group_vms_list.values_list('vmid', flat=True)
     vms_vmid = list(vms_list)
     data_list = []
