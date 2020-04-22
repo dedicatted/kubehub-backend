@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from rest_framework_simplejwt import views as jwt_views
 
 from .proxmox import proxmox_hard_drive_cleaning
 from .views import (
@@ -128,5 +129,15 @@ urlpatterns = [
         r"^vm/os-image/remove$",
         os_image_view.os_image_remove,
         name="os_image_remove"
-    )
+    ),
+    url(
+        r'^token/obtain$',
+        jwt_views.TokenObtainPairView.as_view(),
+        name='token_create'
+    ),
+    url(
+        r'^token/refresh$',
+        jwt_views.TokenRefreshView.as_view(),
+        name='token_refresh'
+    ),
 ]
