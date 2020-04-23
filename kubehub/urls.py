@@ -1,6 +1,5 @@
 from django.conf.urls import url
-from rest_framework_simplejwt import views as jwt_views
-
+from rest_framework.authtoken.views import obtain_auth_token
 from .proxmox import proxmox_hard_drive_cleaning
 from .views import (
     proxmox_cloud_provider_view,
@@ -11,7 +10,8 @@ from .views import (
     vm_group_view,
     get_kube_config,
     kubernetes_version_view,
-    os_image_view
+    os_image_view,
+    account_view
 )
 
 
@@ -131,13 +131,28 @@ urlpatterns = [
         name="os_image_remove"
     ),
     url(
-        r'^token/obtain$',
-        jwt_views.TokenObtainPairView.as_view(),
-        name='token_create'
+        r'^account/add$',
+        account_view.account_add,
+        name='account_add'
     ),
     url(
-        r'^token/refresh$',
-        jwt_views.TokenRefreshView.as_view(),
-        name='token_refresh'
+        r'^account/list$',
+        account_view.account_list,
+        name='account_list'
+    ),
+    url(
+        r'^account/remove$',
+        account_view.account_remove,
+        name='account_remove'
+    ),
+    url(
+        r'^account/edit$',
+        account_view.account_edit,
+        name='account_edit'
+    ),
+    url(
+        r'^account/login$',
+        obtain_auth_token,
+        name='login'
     ),
 ]
