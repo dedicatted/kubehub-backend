@@ -1,7 +1,6 @@
 from json import loads
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
-from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 
 from kubehub.models.account import Account
@@ -25,10 +24,7 @@ def account_add(request):
             serializer = RegistrationSerializer(data=data)
             if serializer.is_valid():
                 account = serializer.save()
-                token = Token.objects.get(user=account).key
-                user = model_to_dict(account)
-                user['token'] = token
-                return JsonResponse(user)
+                return JsonResponse(model_to_dict(account))
             else:
                 return JsonResponse({'errors': serializer.errors})
         except Exception as e:
