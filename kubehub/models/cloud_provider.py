@@ -11,10 +11,26 @@ class CloudProvider(models.Model):
         ('AWS', 'AWS'),
         ('GCP', 'GCP')
     )
-    cp_type = models.CharField(max_length=name_max, choices=CP_TYPES)
-    name = models.CharField(max_length=name_max)
-    api_endpoint = models.CharField(max_length=name_max)
-    password = models.CharField(max_length=name_max)
+    cp_type = models.CharField(
+        max_length=name_max,
+        choices=CP_TYPES,
+        null=True
+    )
+    name = models.CharField(
+        max_length=name_max,
+        unique=True,
+        null=True
+    )
+    api_endpoint = models.CharField(
+        max_length=name_max,
+        unique=True,
+        null=True
+    )
+    password = models.CharField(
+        max_length=name_max,
+        unique=True,
+        null=True
+    )
     readonly_fields = ('cp_type', 'api_endpoint', 'password')
 
     def __str__(self):

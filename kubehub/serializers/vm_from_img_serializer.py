@@ -6,5 +6,5 @@ from ..models.vm_from_img import VmFromImage
 class VmFromImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = VmFromImage
-        fields = ('id', 'name', 'vmid', 'ip', 'cloud_provider', 'cores',
+        fields = ('id', 'name', 'vmid', 'ip', 'cores',
                   'sockets', 'memory', 'boot_disk', 'os_image', 'disk_type')

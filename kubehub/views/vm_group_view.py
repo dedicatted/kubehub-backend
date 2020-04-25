@@ -54,11 +54,11 @@ def vm_group_add(request):
                     'name': data['name'],
                     'user_id': '1',
                     'status': 'creating',
-                    'vms': [{
+                    'cloud_provider': data['cloud_provider_id'],
+                    'image_vms': [{
                         'name': data['name'],
                         'vmid': '0',
                         'ip': 'creating',
-                        'cloud_provider': data['cloud_provider_id'],
                         'cores': data['cores'],
                         'sockets': data['sockets'],
                         'memory': data['memory'],
@@ -95,7 +95,8 @@ def vm_group_add(request):
                     'name': data['name'],
                     'user_id': '1',
                     'status': 'creating',
-                    'vms': [{
+                    'cloud_provider': data['cloud_provider_id'],
+                    'template_vms': [{
                         'name': 'creating',
                         'vmid': '0',
                         'ip': 'creating',
@@ -104,8 +105,7 @@ def vm_group_add(request):
                         'memory': data['memory'],
                         'boot_disk': data['boot_disk'],
                         'template': data['template_id'],
-                        'disk_type': data['disk_type'],
-                        'cloud_provider': data['cloud_provider_id']
+                        'disk_type': data['disk_type']
                     } for _ in range(int(data['number_of_nodes']))]
                 }
                 vmgs = VmGroupFromTemplateSerializer(data=virtual_machine_group)
