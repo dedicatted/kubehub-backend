@@ -2,12 +2,16 @@ from json import loads
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from kubehub.models.os_image import OsImage
 from kubehub.serializers.os_image_serializer import OsImageSerializer
 
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def os_image_list(request):
     if request.method == 'GET':
         try:
@@ -16,6 +20,8 @@ def os_image_list(request):
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def os_image_add(request):
     if request.method == 'POST':
@@ -31,6 +37,8 @@ def os_image_add(request):
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def os_image_remove(request):
     if request.method == 'POST':
