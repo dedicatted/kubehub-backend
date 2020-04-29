@@ -14,7 +14,7 @@ from ..serializers.vm_group_from_img_serializer import VmGroupFromImageSerialize
 from ..serializers.k8s_cluster_serializer import KubernetesClusterSerializer
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @csrf_exempt
 def kubernetes_cluster_list(request):
