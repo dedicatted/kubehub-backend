@@ -31,7 +31,7 @@ def create_vm_from_template(data):
 
     )
     if clone:
-        vm_config = vm_from_template_config(
+        vm_from_template_config(
             host=cloud_provider_instance.api_endpoint,
             password=cloud_provider_instance.password,
             node=get_vm_node(
@@ -44,21 +44,30 @@ def create_vm_from_template(data):
             vmid=newid,
             memory=data['memory']
         )
-        if vm_config:
-            vm_disk_resize = resize_disk(
+        vm_disk_resize = resize_disk(
+            host=cloud_provider_instance.api_endpoint,
+            password=cloud_provider_instance.password,
+            node=get_vm_node(
+                host=cloud_provider_instance.api_endpoint,
+                password=cloud_provider_instance.password,
+                vmid=newid
+            ),
+            vmid=newid,
+            disk=data['disk_type'],
+            size=data['boot_disk']
+        )
+        if vm_disk_resize:
+            start = vm_start(
                 host=cloud_provider_instance.api_endpoint,
                 password=cloud_provider_instance.password,
                 node=get_vm_node(
                     host=cloud_provider_instance.api_endpoint,
                     password=cloud_provider_instance.password,
-                    vmid=newid
-                ),
-                vmid=newid,
-                disk=data['disk_type'],
-                size=data['boot_disk']
+                    vmid=newid),
+                vmid=newid
             )
-            if vm_disk_resize:
-                start = vm_start(
+            if start:
+                status = vm_status(
                     host=cloud_provider_instance.api_endpoint,
                     password=cloud_provider_instance.password,
                     node=get_vm_node(
@@ -67,8 +76,17 @@ def create_vm_from_template(data):
                         vmid=newid),
                     vmid=newid
                 )
-                if start:
-                    status = vm_status(
+                if status == "running":
+                    ip = get_vm_ip(
+                        proxmox_ip=cloud_provider_instance.api_endpoint,
+                        password=cloud_provider_instance.password,
+                        node=get_vm_node(
+                            host=cloud_provider_instance.api_endpoint,
+                            password=cloud_provider_instance.password,
+                            vmid=newid),
+                        vmid=newid
+                    )
+                    vm_update(
                         host=cloud_provider_instance.api_endpoint,
                         password=cloud_provider_instance.password,
                         node=get_vm_node(
@@ -77,39 +95,20 @@ def create_vm_from_template(data):
                             vmid=newid),
                         vmid=newid
                     )
-                    if status == "running":
-                        ip = get_vm_ip(
-                            proxmox_ip=cloud_provider_instance.api_endpoint,
-                            password=cloud_provider_instance.password,
-                            node=get_vm_node(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                vmid=newid),
-                            vmid=newid
-                        )
-                        vm_update(
+                    vm_upgrade(
+                        host=cloud_provider_instance.api_endpoint,
+                        password=cloud_provider_instance.password,
+                        node=get_vm_node(
                             host=cloud_provider_instance.api_endpoint,
                             password=cloud_provider_instance.password,
-                            node=get_vm_node(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                vmid=newid),
-                            vmid=newid
-                        )
-                        vm_upgrade(
-                            host=cloud_provider_instance.api_endpoint,
-                            password=cloud_provider_instance.password,
-                            node=get_vm_node(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                vmid=newid),
-                            vmid=newid
-                        )
-                        return {
-                            "name": data["name"],
-                            "vmid": newid,
-                            "ip": ip,
-                            "cloud_provider_id": cloud_provider_instance.id,
-                            "template_id": template_instance.id
-                        }
+                            vmid=newid),
+                        vmid=newid
+                    )
+                    return {
+                        "name": data["name"],
+                        "vmid": newid,
+                        "ip": ip,
+                        "cloud_provider_id": cloud_provider_instance.id,
+                        "template_id": template_instance.id
+                    }
 

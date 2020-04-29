@@ -61,8 +61,7 @@ class VM(models.Model):
         default='scsi0'
     )
 
-    readonly_fields = ('vm_group_id', 'name', 'vmid', 'ip', 'cloud_provider',
-                       'cores', 'sockets', 'memory', 'boot_disk', 'disk_type')
+    readonly_fields = ('vm_group_id', 'name', 'vmid', 'ip', 'cores', 'sockets', 'memory', 'boot_disk', 'disk_type')
 
     def __str__(self):
         return f'id: {self.id}, name: {self.name}, vmid: {self.vmid}, ip: {self.ip}, ' \

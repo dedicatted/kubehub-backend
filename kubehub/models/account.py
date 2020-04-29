@@ -24,7 +24,18 @@ class Account (AbstractBaseUser):
         verbose_name='last login',
         auto_now=True
     )
-    is_admin = models.BooleanField(default=False)
+    first_name = models.CharField(
+        max_length=20,
+        unique=False,
+        blank=True
+    )
+    last_name = models.CharField(
+        max_length=20,
+        unique=False,
+        blank=True,
+        null=True
+    )
+    is_admin = models.BooleanField(blank=True, default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -37,7 +48,8 @@ class Account (AbstractBaseUser):
 
     def __str__(self):
         return f'id: {self.id}, email: {self.email}, username: {self.username}, date_joined: {self.date_joined}, ' \
-               f'last_login: {self.last_login}, is_active: {self.is_active}, '
+               f'last_login: {self.last_login}, is_active: {self.is_active}, first_name: {self.first_name}, ' \
+               f'last_name: {self.last_name}'
 
     def has_perm(self, perm, obj=None):
         return self.is_admin

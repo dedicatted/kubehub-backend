@@ -7,7 +7,7 @@ from ..models.kubernetes_version import KubernetesVersion
 
 class KubernetesCluster(models.Model):
     name_max = int(check_output('getconf NAME_MAX /', shell=True))
-    name = models.CharField(max_length=name_max)
+    name = models.CharField(max_length=name_max, unique=True)
     kubernetes_version_id = models.ForeignKey(
         KubernetesVersion,
         on_delete=models.CASCADE
