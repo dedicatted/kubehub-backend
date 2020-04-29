@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from json import loads
 from ..models.vm_group import VMGroup
@@ -12,6 +14,8 @@ from ..serializers.vm_group_from_img_serializer import VmGroupFromImageSerialize
 from ..serializers.k8s_cluster_serializer import KubernetesClusterSerializer
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def kubernetes_cluster_list(request):
     if request.method == 'GET':
@@ -30,6 +34,8 @@ def kubernetes_cluster_list(request):
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def kubernetes_cluster_add(request):
     if request.method == 'POST':
@@ -59,6 +65,8 @@ def kubernetes_cluster_add(request):
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def kubernetes_cluster_remove(request):
     if request.method == 'POST':

@@ -151,6 +151,11 @@ urlpatterns = [
         name='account_edit'
     ),
     url(
+        r'^account/get_account_data$',
+        account_view.get_account_data,
+        name='get_account_data'
+    ),
+    url(
         r'^account/login$',
         jwt_views.TokenObtainPairView.as_view(),
         name='login'

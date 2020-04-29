@@ -4,6 +4,8 @@ from subprocess import Popen
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from ..models.vm_from_img import VmFromImage
 from ..models.k8s_cluster import KubernetesCluster
@@ -15,6 +17,8 @@ from ..serializers.k8s_cluster_serializer import KubernetesClusterSerializer
 from ..serializers.kubespray_deploy_serializer import KubesprayDeploySerializer
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def restart_kubespray_deploy(request):
     if request.method == 'POST':

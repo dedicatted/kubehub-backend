@@ -1,6 +1,8 @@
 from json import loads
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from ..models.vm_from_img import VmFromImage
 from ..proxmox.get_vm_node import get_vm_node
@@ -12,6 +14,8 @@ from ..k8s_config.k8s_config_file_create import create_config_file
 from ..k8s_config.k8s_config_directory_create import create_k8s_config_file_dir
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def get_kube_config(request):
     if request.method == 'POST':

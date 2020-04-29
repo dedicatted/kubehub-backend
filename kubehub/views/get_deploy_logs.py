@@ -1,11 +1,15 @@
 from json import loads
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from kubehub_backend.settings import K8S_DEPLOY_LOG_DIR
 from ..models.kubespray_deploy import KubesprayDeploy
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def get_deploy_logs(request):
     if request.method == 'POST':

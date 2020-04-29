@@ -2,6 +2,8 @@ from json import loads
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from ..models.vm_from_img import VmFromImage
 from ..models.vm_from_template import VmFromTemplate
@@ -16,6 +18,8 @@ from ..serializers.vm_group_from_template_serializer import VmGroupFromTemplateS
 
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def vm_group_list(request):
     if request.method == 'GET':
         try:
@@ -32,6 +36,8 @@ def vm_group_list(request):
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def get_vm_group_status(request):
     if request.method == 'POST':
@@ -44,6 +50,8 @@ def get_vm_group_status(request):
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def vm_group_add(request):
     if request.method == 'POST':
@@ -179,6 +187,8 @@ def template_based_vm_status_update(pk, status):
         return model_to_dict(vmg)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def vm_group_remove(request):
     if request.method == 'POST':
