@@ -25,5 +25,5 @@ urlpatterns = [
     url(r'api/proxmox/', include('kubehub.urls')),
     url(r'api/VM_group/', include('kubehub.urls')),
     url(r'', include('kubehub.urls')),
-    url(r'api/virtualbox/', include('kubehub.virtualbox_api.urls')),
+    url(r'api/virtualbox/', include('kubehub.vbox_api.urls')),
 ]

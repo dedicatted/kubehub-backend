@@ -3,8 +3,8 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 
-from ..models.virtualbox_provider import VirtualBoxCloudProvider
-from ..serializers.virtualbox_provider_serializer import VirtualBoxCloudProviderSerializer
+from kubehub.vbox_api.models.vbox_cloud_provider import VirtualBoxCloudProvider
+from kubehub.vbox_api.serializers.vbox_cloud_provider_serializer import VirtualBoxCloudProviderSerializer
 
 
 @csrf_exempt

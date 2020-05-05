@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from kubehub.models.proxmox_cloud_provider import ProxmoxCloudProvider
-from kubehub.virtualbox_api.models.virtualbox_provider import VirtualBoxCloudProvider
+from kubehub.vbox_api.models.vbox_cloud_provider import VirtualBoxCloudProvider
 
 
 @csrf_exempt

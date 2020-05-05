@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
-from ..models.virtualbox_provider import VirtualBoxCloudProvider
+from kubehub.vbox_api.models.vbox_cloud_provider import VirtualBoxCloudProvider
 
 
 class VirtualBoxCloudProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = VirtualBoxCloudProvider
-        fields = ('id', 'cp_type', 'name', 'api_endpoint', 'password', 'debian_supported_versions')
+        fields = ('id', 'cp_type', 'name', 'api_endpoint', 'password', 'vbox_img_dir')
 
     def create(self, validated_data):
         if self.validated_data.get('api_endpoint'):
