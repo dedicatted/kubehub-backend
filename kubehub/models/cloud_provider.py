@@ -9,7 +9,8 @@ class CloudProvider(models.Model):
     CP_TYPES = (
         ('Proxmox', 'Proxmox'),
         ('AWS', 'AWS'),
-        ('GCP', 'GCP')
+        ('GCP', 'GCP'),
+        ('VirtualBox', 'VirtualBox')
     )
     cp_type = models.CharField(
         max_length=name_max,
@@ -24,12 +25,14 @@ class CloudProvider(models.Model):
     api_endpoint = models.CharField(
         max_length=name_max,
         unique=True,
-        null=True
+        default=None,
+        blank=True
     )
     password = models.CharField(
         max_length=name_max,
         unique=True,
-        null=True
+        default=None,
+        blank=True
     )
     readonly_fields = ('cp_type', 'api_endpoint', 'password')
 
