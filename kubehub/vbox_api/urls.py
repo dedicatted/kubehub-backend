@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from .views import (
     vbox_coud_provider_view,
-    vbox_img_view
+    vbox_img_view,
+    vbox_vmg_view
 )
 
 
@@ -35,5 +36,10 @@ urlpatterns = [
         r"^vbox_img/add$",
         vbox_img_view.vbox_img_add,
         name="vbox_img_add"
+    ),
+    url(
+        r"^vmg/add$",
+        vbox_vmg_view.vbox_vmg_add,
+        name="vbox_vmg_add"
     ),
 ]
