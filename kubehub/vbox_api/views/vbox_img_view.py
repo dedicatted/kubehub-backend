@@ -5,7 +5,7 @@ from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 
 from kubehub.vbox_api.models.vbox_img import VirtualBoxImage
-from kubehub.vbox_api.vbox_functions.get_vbox_images import get_images
+from kubehub.vbox_api.vbox_functions.vbox_get_images import get_images
 from kubehub.vbox_api.models.vbox_cloud_provider import VirtualBoxCloudProvider
 from kubehub.vbox_api.serializers.vbox_img_serializer import VirtualBoxImageSerializer
 

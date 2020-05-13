@@ -14,4 +14,3 @@ python-dotenv==0.12.0
 GitPython==3.1.0
 # djangorestframework-jwt==1.11.0
 djangorestframework-simplejwt==4.4.0
-virtualbox==2.0.0
