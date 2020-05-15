@@ -34,8 +34,8 @@ def virtualbox_provider_remove(request):
     if request.method == 'POST':
         try:
             data = loads(request.body)
-            pk = data.pop('id')
-            instance = VirtualBoxCloudProvider.objects.get(pk=pk)
+            vbox_provider_id = data.pop('id')
+            instance = VirtualBoxCloudProvider.objects.get(pk=vbox_provider_id)
             instance.delete()
             return JsonResponse({'deleted': model_to_dict(instance)})
         except Exception as e:
@@ -48,8 +48,8 @@ def virtualbox_provider_edit(request):
     if request.method == 'POST':
         try:
             data = loads(request.body)
-            pk = data.pop('id')
-            instance = VirtualBoxCloudProvider.objects.get(pk=pk)
+            vbox_provider_id = data.pop('id')
+            instance = VirtualBoxCloudProvider.objects.get(pk=vbox_provider_id)
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
         cps = VirtualBoxCloudProviderSerializer(data=data, partial=True)
