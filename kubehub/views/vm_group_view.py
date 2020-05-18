@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from ..models.vm_from_img import VmFromImage
 from ..models.vm_from_template import VmFromTemplate
-from ..models.vm_group import VMGroup
+from ..models.proxmox_vm_group import ProxmoxVmGroup
 from ..proxmox.vm_group_delete import vm_group_delete
 from ..proxmox.vmg_create_from_img import create_vm_group_from_img
 from ..proxmox.vmg_create_from_template import create_vm_group_from_template
@@ -24,7 +24,7 @@ def vm_group_list(request):
     if request.method == 'GET':
         try:
             vm_groups = []
-            for vm_group in VMGroup.objects.all():
+            for vm_group in ProxmoxVmGroup.objects.all():
                 template_based_vm_list = VmFromTemplate.objects.filter(vm_group=vm_group)
                 image_based_vm_list = VmFromImage.objects.filter(vm_group=vm_group)
                 vm_list = list(template_based_vm_list) + list(image_based_vm_list)
@@ -44,7 +44,7 @@ def get_vm_group_status(request):
         try:
             data = loads(request.body)
             pk = data.get('vm_group_id')
-            instance = VMGroup.objects.get(pk=pk)
+            instance = ProxmoxVmGroup.objects.get(pk=pk)
             return JsonResponse(str(instance.status), safe=False)
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
@@ -170,7 +170,7 @@ def template_based_vms_update(pk, vms):
 
 
 def image_based_vm_status_update(pk, status):
-    instance = VMGroup.objects.get(pk=pk)
+    instance = ProxmoxVmGroup.objects.get(pk=pk)
     data = {'status': status}
     vmgs = VmGroupFromImageSerializer(data=data, partial=True)
     if vmgs.is_valid():
@@ -179,7 +179,7 @@ def image_based_vm_status_update(pk, status):
 
 
 def template_based_vm_status_update(pk, status):
-    instance = VMGroup.objects.get(pk=pk)
+    instance = ProxmoxVmGroup.objects.get(pk=pk)
     data = {'status': status}
     vmgs = VmGroupFromTemplateSerializer(data=data, partial=True)
     if vmgs.is_valid():
@@ -203,7 +203,7 @@ def vm_group_remove(request):
                         pk=pk,
                         status='removed'
                     )
-                    instance = VMGroup.objects.get(pk=pk)
+                    instance = ProxmoxVmGroup.objects.get(pk=pk)
                     instance.delete()
                     return JsonResponse({'deleted': model_to_dict(instance)})
             except Exception as e:

@@ -1,7 +1,7 @@
 from django.db import models
 from subprocess import check_output
 
-from ..models.vm_group import VMGroup
+from ..models.proxmox_vm_group import ProxmoxVmGroup
 from ..models.k8s_cluster import KubernetesCluster
 
 
@@ -14,7 +14,7 @@ class KubesprayDeploy(models.Model):
         ('failed', 'failed')
     )
     status = models.CharField(max_length=name_max, choices=statuses)
-    vm_group = models.ForeignKey(VMGroup, on_delete=models.CASCADE, related_name="kubespray_deployments")
+    vm_group = models.ForeignKey(ProxmoxVmGroup, on_delete=models.CASCADE, related_name="kubespray_deployments")
     readonly_fields = 'vm_group, k8s_cluster_id'
 
     def __str__(self):
