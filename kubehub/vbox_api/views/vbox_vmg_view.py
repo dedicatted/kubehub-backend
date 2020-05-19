@@ -11,6 +11,21 @@ from kubehub.vbox_api.serializers.vbox_vm_group_serializer import VboxVmGroupSer
 
 
 @csrf_exempt
+def vbox_vmg_list(request):
+    if request.method == 'GET':
+        try:
+            vm_groups = []
+            for vm_group in VboxVmGroup.objects.all():
+                vm_list = VirtualBoxVm.objects.filter(vm_group=vm_group)
+                vmg_dict = model_to_dict(vm_group)
+                vmg_dict['vms'] = [model_to_dict(vm) for vm in vm_list]
+                vm_groups.append(vmg_dict)
+            return JsonResponse({'vm_group_list': vm_groups})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+
+
+@csrf_exempt
 def vbox_vmg_add(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -72,3 +87,31 @@ def vbox_vms_status_update(pk, status):
     if vmgs.is_valid():
         vmg = vmgs.update(instance, vmgs.validated_data)
         return model_to_dict(vmg)
+
+
+@csrf_exempt
+def vm_group_remove(request):
+    if request.method == 'POST':
+        try:
+            data = loads(request.body)
+            pk = data.get('vm_group_id')
+            try:
+                vbox_vms_status_update(pk, 'removing')
+                delete = ""
+                    # vm_group_delete(data)
+                if delete:
+                    vbox_vms_status_update(
+                        pk=pk,
+                        status='removed'
+                    )
+                    instance = VboxVmGroup.objects.get(pk=pk)
+                    instance.delete()
+                    return JsonResponse({'deleted': model_to_dict(instance)})
+            except Exception as e:
+                vbox_vms_status_update(
+                    pk=pk,
+                    status='error'
+                )
+                return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
