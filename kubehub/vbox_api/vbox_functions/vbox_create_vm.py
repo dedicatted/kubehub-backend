@@ -31,7 +31,7 @@ def vbox_create_vm(data):
     add_network_card(name=vm_name, status="on")
     set_ram_size(name=vm_name, ram_size=data.get('memory'))
     set_number_of_cpus(name=vm_name, cpus=data.get('cores'))
-    set_network_card(name=vm_name, protocol="nat")
+    set_network_card(name=vm_name, protocol="bridged")
     select_hdd_controller(
         name=vm_name,
         controller_name='SATA Controller',

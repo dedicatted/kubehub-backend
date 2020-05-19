@@ -38,6 +38,11 @@ urlpatterns = [
         name="vbox_img_add"
     ),
     url(
+        r"^vmg/list$",
+        vbox_vmg_view.vbox_vmg_list,
+        name="vbox_vmg_list"
+    ),
+    url(
         r"^vmg/add$",
         vbox_vmg_view.vbox_vmg_add,
         name="vbox_vmg_add"

@@ -1,7 +1,7 @@
 from django.db import models
 from subprocess import check_output
 
-from ..models.vm_group import VMGroup
+from ..models.proxmox_vm_group import ProxmoxVmGroup
 from ..models.kubernetes_version import KubernetesVersion
 
 
@@ -13,7 +13,7 @@ class KubernetesCluster(models.Model):
         on_delete=models.CASCADE
     )
     vm_group = models.OneToOneField(
-        VMGroup,
+        ProxmoxVmGroup,
         on_delete=models.CASCADE
     )
     statuses = (

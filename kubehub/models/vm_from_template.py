@@ -2,7 +2,7 @@ from django.db import models
 
 from ..models.vm import VM
 from ..models.template import Template
-from ..models.vm_group import VMGroup
+from ..models.proxmox_vm_group import ProxmoxVmGroup
 
 
 class VmFromTemplate(VM):
@@ -13,7 +13,7 @@ class VmFromTemplate(VM):
         default=0
     )
     vm_group = models.ForeignKey(
-        VMGroup,
+        ProxmoxVmGroup,
         on_delete=models.CASCADE,
         related_name="template_vms",
         default=None

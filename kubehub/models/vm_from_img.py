@@ -2,7 +2,7 @@ from django.db import models
 
 from ..models.vm import VM
 from ..models.os_image import OsImage
-from ..models.vm_group import VMGroup
+from ..models.proxmox_vm_group import ProxmoxVmGroup
 
 
 class VmFromImage(VM):
@@ -13,7 +13,7 @@ class VmFromImage(VM):
         default=0
     )
     vm_group = models.ForeignKey(
-        VMGroup,
+        ProxmoxVmGroup,
         on_delete=models.CASCADE,
         related_name="image_vms",
         default=None,

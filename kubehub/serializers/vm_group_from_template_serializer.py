@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models.vm_group import VMGroup
+from ..models.proxmox_vm_group import ProxmoxVmGroup
 from ..models.vm_from_template import VmFromTemplate
 from ..serializers.vm_from_template_serializer import VmFromTemplateSerializer
 
@@ -9,12 +9,12 @@ class VmGroupFromTemplateSerializer(serializers.ModelSerializer):
     template_vms = VmFromTemplateSerializer(many=True)
 
     class Meta:
-        model = VMGroup
+        model = ProxmoxVmGroup
         fields = ('id', 'name', 'user_id', 'status', 'cloud_provider', 'template_vms')
 
     def create(self, validated_data):
         template_vms = validated_data.pop('template_vms')
-        vm_group = VMGroup.objects.create(**validated_data)
+        vm_group = ProxmoxVmGroup.objects.create(**validated_data)
         for vm in template_vms:
             VmFromTemplate.objects.create(vm_group=vm_group, **vm)
         return vm_group

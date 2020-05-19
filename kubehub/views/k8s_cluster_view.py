@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
 from json import loads
-from ..models.vm_group import VMGroup
+from ..models.proxmox_vm_group import ProxmoxVmGroup
 from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
 from ..proxmox.vm_group_delete import vm_group_delete
@@ -96,7 +96,7 @@ def kubernetes_cluster_remove(request):
                     )
                     k8s_cluster_instance = KubernetesCluster.objects.get(pk=k8s_cluster_pk)
                     k8s_cluster_instance.delete()
-                    vm_group_instance = VMGroup.objects.get(pk=vm_group_pk)
+                    vm_group_instance = ProxmoxVmGroup.objects.get(pk=vm_group_pk)
                     vm_group_instance.delete()
                     return JsonResponse({'deleted': model_to_dict(k8s_cluster_instance)})
             except Exception as e:
@@ -123,7 +123,7 @@ def k8s_cluster_status_update(pk, status):
 
 
 def vm_group_status_update(pk, status):
-    instance = VMGroup.objects.get(pk=pk)
+    instance = ProxmoxVmGroup.objects.get(pk=pk)
     data = {'status': status}
     vmgs = VmGroupFromImageSerializer(data=data, partial=True)
     if vmgs.is_valid():
