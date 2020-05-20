@@ -2,6 +2,8 @@ from json import loads
 from os.path import split
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from kubehub.vbox_api.models.vbox_img import VirtualBoxImage
 from kubehub.vbox_api.vbox_functions.vbox_get_images import get_images
@@ -10,6 +12,8 @@ from kubehub.vbox_api.serializers.vbox_img_serializer import VirtualBoxImageSeri
 
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def vbox_img_list(request):
     if request.method == 'GET':
         try:
@@ -19,6 +23,8 @@ def vbox_img_list(request):
 
 
 @csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def vbox_img_add(request):
     if request.method == 'POST':
         data = loads(request.body)

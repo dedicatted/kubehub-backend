@@ -2,6 +2,8 @@ from json import loads
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from kubehub.vbox_api.models.vbox_vm import VirtualBoxVm
 from kubehub.vbox_api.models.vbox_vmg import VboxVmGroup
@@ -13,6 +15,8 @@ from kubehub.vbox_api.serializers.vbox_vm_group_serializer import VboxVmGroupSer
 
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def vbox_vmg_list(request):
     if request.method == 'GET':
         try:
@@ -29,6 +33,8 @@ def vbox_vmg_list(request):
 
 
 @csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def vbox_vmg_add(request):
     if request.method == 'POST':
         try:
@@ -97,6 +103,8 @@ def vbox_vms_status_update(pk, status):
 
 
 @csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def vbox_vmg_remove(request):
     if request.method == 'POST':
         try:
