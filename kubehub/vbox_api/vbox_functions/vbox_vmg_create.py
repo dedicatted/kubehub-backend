@@ -1,7 +1,7 @@
 from multiprocessing import cpu_count
 from multiprocessing.pool import ThreadPool
 
-from kubehub.vbox_api.vbox_functions.vbox_create_vm import vbox_create_vm
+from kubehub.vbox_api.vbox_functions.vbox_vm_create import vbox_create_vm
 from kubehub.vbox_api.vbox_functions.vbox_vmg_create_data_formation import vmg_create_data_formation
 
 

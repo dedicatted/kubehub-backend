@@ -47,4 +47,9 @@ urlpatterns = [
         vbox_vmg_view.vbox_vmg_add,
         name="vbox_vmg_add"
     ),
+    url(
+        r"^vmg/remove$",
+        vbox_vmg_view.vbox_vmg_remove,
+        name="vbox_vmg_add"
+    ),
 ]
