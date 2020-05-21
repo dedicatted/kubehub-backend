@@ -67,6 +67,16 @@ urlpatterns = [
         name="virtual_machines_group_list",
     ),
     url(
+        r"^vm/group/from/template/list$",
+        vm_group_view.vm_group_from_template_list,
+        name="vm_group_from_template_list",
+    ),
+    url(
+        r"^vm/group/from/image/list$",
+        vm_group_view.vm_group_from_image_list,
+        name="vm_group_from_image_list",
+    ),
+    url(
         r"^vm/group/status$",
         vm_group_view.get_vm_group_status,
         name="vm_group_status"

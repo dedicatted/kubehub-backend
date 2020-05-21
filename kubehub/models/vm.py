@@ -7,7 +7,6 @@ class VM(models.Model):
         abstract = True
     name_max = int(check_output('getconf NAME_MAX /', shell=True))
     name = models.CharField(max_length=name_max)
-    vmid = models.IntegerField()
     ip = models.CharField(max_length=name_max)
     CORES_CHOICES = (
         (1, 1),
@@ -15,28 +14,17 @@ class VM(models.Model):
         (4, 4)
     )
     cores = models.IntegerField(
-        choices=CORES_CHOICES,
-        default=1
-    )
-    SOCKETS_CHOICES = (
-        (1, 1),
-        (2, 2),
-        (4, 4)
-    )
-    sockets = models.IntegerField(
-        choices=SOCKETS_CHOICES,
-        default=1
+        choices=CORES_CHOICES
     )
     MEMORY_CHOICES = (
-        (1024, 1024),
-        (2048, 2048),
-        (4096, 4096),
-        (8192, 8192),
-        (16384, 16384)
+        (1, 1),
+        (2, 2),
+        (4, 4),
+        (8, 8),
+        (16, 16)
     )
     memory = models.IntegerField(
-        choices=MEMORY_CHOICES,
-        default=1024
+        choices=MEMORY_CHOICES
     )
     BOOT_DISK_CHOICES = (
         (32, 32),
@@ -49,23 +37,11 @@ class VM(models.Model):
         choices=BOOT_DISK_CHOICES,
         default=32
     )
-    DISK_TYPE_CHOICES = (
-        ('scsi0', 'scsi0'),
-        ('virtio0', 'virtio0'),
-        ('ide0', 'ide0'),
-        ('sata0', 'sata0')
-    )
-    disk_type = models.CharField(
-        max_length=name_max,
-        choices=DISK_TYPE_CHOICES,
-        default='scsi0'
-    )
 
-    readonly_fields = ('vm_group_id', 'name', 'vmid', 'ip', 'cores', 'sockets', 'memory', 'boot_disk', 'disk_type')
+    readonly_fields = ('name', 'ip', 'cores', 'memory', 'boot_disk', 'vm_group_id')
 
     def __str__(self):
-        return f'id: {self.id}, name: {self.name}, vmid: {self.vmid}, ip: {self.ip}, ' \
-               f'cores: {self.cores}, sockets: {self.sockets}, memory: {self.memory},' \
+        return f'id: {self.id}, name: {self.name}, ip: {self.ip}, cores: {self.cores}, memory: {self.memory},' \
                f'boot_disk: {self.boot_disk},'
 
 
