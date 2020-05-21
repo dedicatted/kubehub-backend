@@ -120,6 +120,9 @@ def create_vm_from_template(data):
                             "vmid": newid,
                             "ip": ip,
                             "cloud_provider_id": cloud_provider_instance.id,
-                            "template_id": template_instance.id
+                            "template_id": template_instance.id,
+                            "cores": data["cores"],
+                            'memory': data['memory'],
+                            'boot_disk': data['boot_disk']
                         }
 
