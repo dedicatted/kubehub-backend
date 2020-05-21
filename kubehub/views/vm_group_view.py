@@ -36,6 +36,42 @@ def vm_group_list(request):
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
 
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def vm_group_from_template_list(request):
+    if request.method == 'GET':
+        try:
+            vm_groups = []
+            for vm_group in ProxmoxVmGroup.objects.all():
+                template_based_vm_list = VmFromTemplate.objects.filter(vm_group=vm_group)
+                if template_based_vm_list:
+                    vmg_dict = model_to_dict(vm_group)
+                    vmg_dict['vms'] = [model_to_dict(vm) for vm in template_based_vm_list]
+                    vm_groups.append(vmg_dict)
+            return JsonResponse({'vm_group_from_template_list': vm_groups})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def vm_group_from_image_list(request):
+    if request.method == 'GET':
+        try:
+            vm_groups = []
+            for vm_group in ProxmoxVmGroup.objects.all():
+                image_based_vm_list = VmFromImage.objects.filter(vm_group=vm_group)
+                if image_based_vm_list:
+                    vmg_dict = model_to_dict(vm_group)
+                    vmg_dict['vms'] = [model_to_dict(vm) for vm in image_based_vm_list]
+                    vm_groups.append(vmg_dict)
+            return JsonResponse({'vm_group_from_image_list': vm_groups})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @csrf_exempt
@@ -109,11 +145,9 @@ def vm_group_add(request):
                         'vmid': '0',
                         'ip': 'creating',
                         'cores': data['cores'],
-                        'sockets': data['sockets'],
                         'memory': data['memory'],
                         'boot_disk': data['boot_disk'],
                         'template': data['template_id'],
-                        'disk_type': data['disk_type']
                     } for _ in range(int(data['number_of_nodes']))]
                 }
                 vmgs = VmGroupFromTemplateSerializer(data=virtual_machine_group)
