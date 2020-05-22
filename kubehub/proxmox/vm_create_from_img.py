@@ -26,7 +26,7 @@ def create_vm_from_img(data):
         host=cloud_provider_instance.api_endpoint,
         password=cloud_provider_instance.password,
         cores=data['cores'],
-        sockets=data['sockets'],
+        sockets=1,
         memory=data['memory'],
         name=data['name'],
         node=node,
@@ -75,7 +75,7 @@ def create_vm_from_img(data):
                             vmid=vmid
                         ),
                         vmid=vmid,
-                        disk=data['disk_type'],
+                        disk='scsi0',
                         size=data['boot_disk']
                     )
                     start = vm_start(
@@ -131,7 +131,6 @@ def create_vm_from_img(data):
                                 "ip": ip,
                                 "cloud_provider_id": cloud_provider_instance.id,
                                 "cores": data["cores"],
-                                "sockets": data["sockets"],
                                 'memory': data['memory'],
                                 'boot_disk': data['boot_disk']
                             }

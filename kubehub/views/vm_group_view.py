@@ -5,16 +5,16 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
-from ..models.vm_from_img import VmFromImage
-from ..models.vm_from_template import VmFromTemplate
-from ..models.proxmox_vm_group import ProxmoxVmGroup
-from ..proxmox.vm_group_delete import vm_group_delete
-from ..proxmox.vmg_create_from_img import create_vm_group_from_img
-from ..proxmox.vmg_create_from_template import create_vm_group_from_template
-from ..serializers.vm_from_img_serializer import VmFromImageSerializer
-from ..serializers.vm_group_from_img_serializer import VmGroupFromImageSerializer
-from ..serializers.vm_from_template_serializer import VmFromTemplateSerializer
-from ..serializers.vm_group_from_template_serializer import VmGroupFromTemplateSerializer
+from kubehub.models.vm_from_img import VmFromImage
+from kubehub.models.vm_from_template import VmFromTemplate
+from kubehub.models.proxmox_vm_group import ProxmoxVmGroup
+from kubehub.proxmox.vm_group_delete import vm_group_delete
+from kubehub.proxmox.vmg_create_from_img import create_vm_group_from_img
+from kubehub.proxmox.vmg_create_from_template import create_vm_group_from_template
+from kubehub.serializers.vm_from_img_serializer import VmFromImageSerializer
+from kubehub.serializers.vm_group_from_img_serializer import VmGroupFromImageSerializer
+from kubehub.serializers.vm_from_template_serializer import VmFromTemplateSerializer
+from kubehub.serializers.vm_group_from_template_serializer import VmGroupFromTemplateSerializer
 
 
 @csrf_exempt
@@ -32,6 +32,42 @@ def vm_group_list(request):
                 vmg_dict['vms'] = [model_to_dict(vm) for vm in vm_list]
                 vm_groups.append(vmg_dict)
             return JsonResponse({'vm_group_list': vm_groups})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def vm_group_from_template_list(request):
+    if request.method == 'GET':
+        try:
+            vm_groups = []
+            for vm_group in ProxmoxVmGroup.objects.all():
+                template_based_vm_list = VmFromTemplate.objects.filter(vm_group=vm_group)
+                if template_based_vm_list:
+                    vmg_dict = model_to_dict(vm_group)
+                    vmg_dict['vms'] = [model_to_dict(vm) for vm in template_based_vm_list]
+                    vm_groups.append(vmg_dict)
+            return JsonResponse({'vm_group_from_template_list': vm_groups})
+        except Exception as e:
+            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def vm_group_from_image_list(request):
+    if request.method == 'GET':
+        try:
+            vm_groups = []
+            for vm_group in ProxmoxVmGroup.objects.all():
+                image_based_vm_list = VmFromImage.objects.filter(vm_group=vm_group)
+                if image_based_vm_list:
+                    vmg_dict = model_to_dict(vm_group)
+                    vmg_dict['vms'] = [model_to_dict(vm) for vm in image_based_vm_list]
+                    vm_groups.append(vmg_dict)
+            return JsonResponse({'vm_group_from_image_list': vm_groups})
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
@@ -68,10 +104,8 @@ def vm_group_add(request):
                         'vmid': '0',
                         'ip': 'creating',
                         'cores': data['cores'],
-                        'sockets': data['sockets'],
                         'memory': data['memory'],
                         'boot_disk': data['boot_disk'],
-                        'disk_type': data['disk_type'],
                         'os_image': data['os_image_id']
                     } for _ in range(int(data['number_of_nodes']))]
                 }
@@ -109,11 +143,9 @@ def vm_group_add(request):
                         'vmid': '0',
                         'ip': 'creating',
                         'cores': data['cores'],
-                        'sockets': data['sockets'],
                         'memory': data['memory'],
                         'boot_disk': data['boot_disk'],
                         'template': data['template_id'],
-                        'disk_type': data['disk_type']
                     } for _ in range(int(data['number_of_nodes']))]
                 }
                 vmgs = VmGroupFromTemplateSerializer(data=virtual_machine_group)
@@ -197,6 +229,7 @@ def vm_group_remove(request):
             pk = data.get('vm_group_id')
             try:
                 image_based_vm_status_update(pk, 'removing')
+                template_based_vm_status_update(pk, 'removing')
                 delete = vm_group_delete(data)
                 if delete:
                     image_based_vm_status_update(
