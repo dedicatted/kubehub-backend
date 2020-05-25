@@ -1,7 +1,7 @@
 from django.conf.urls import url
-from .proxmox import proxmox_hard_drive_cleaning
+from kubehub.proxmox import proxmox_hard_drive_cleaning
 from rest_framework_simplejwt import views as jwt_views
-from .views import (
+from kubehub.views import (
     proxmox_cloud_provider_view,
     k8s_cluster_view,
     get_deploy_logs,
@@ -11,30 +11,37 @@ from .views import (
     get_kube_config,
     kubernetes_version_view,
     os_image_view,
-    account_view
+    account_view,
+    cloud_provider_view,
+    vm_type_view
 )
 
 
 urlpatterns = [
     url(
+        r"^cloud-provider/list/all$",
+        cloud_provider_view.all_cloud_provider_list,
+        name="all_cloud_provider_list"
+    ),
+    url(
         r"^list$",
         proxmox_cloud_provider_view.proxmox_cloud_provider_list,
-        name="cloud_provider_list"
+        name="proxmox_cloud_provider_list"
     ),
     url(
         r"^add$",
         proxmox_cloud_provider_view.proxmox_cloud_provider_add,
-        name="cloud_provider_add"
+        name="proxmox_cloud_provider_add"
     ),
     url(
         r"^remove$",
         proxmox_cloud_provider_view.proxmox_cloud_provider_remove,
-        name="cloud_provider_remove"
+        name="proxmox_cloud_provider_remove"
     ),
     url(
         r"^edit$",
         proxmox_cloud_provider_view.proxmox_cloud_provider_edit,
-        name="cloud_provider_edit"
+        name="proxmox_cloud_provider_edit"
     ),
     url(
         r"^cluster/add$",
@@ -174,5 +181,20 @@ urlpatterns = [
         r'^account/refresh-token$',
         jwt_views.TokenRefreshView.as_view(),
         name='token_refresh'
+    ),
+    url(
+        r"^vm-type/list$",
+        vm_type_view.vm_type_list,
+        name="vm_type_list"
+    ),
+    url(
+        r"^vm-type/add$",
+        vm_type_view.vm_type_add,
+        name="vm_type_add"
+    ),
+    url(
+        r"^vm-type/edit$",
+        vm_type_view.vm_type_edit,
+        name="vm_type_edit"
     ),
 ]

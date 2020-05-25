@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'api/auth/', include('kubehub.urls')),
     url(r'api/cloud_providers/', include('kubehub.urls')),
     url(r'api/proxmox/', include('kubehub.urls')),
+    url(r'api/kubehub/', include('kubehub.urls')),
     url(r'api/VM_group/', include('kubehub.urls')),
     url(r'', include('kubehub.urls')),
     url(r'api/virtualbox/', include('kubehub.vbox_api.urls')),
