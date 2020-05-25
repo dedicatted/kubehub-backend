@@ -18,11 +18,6 @@ urlpatterns = [
         name="virtualbox_provider_add"
     ),
     url(
-        r"^cloud-provider/edit$",
-        vbox_coud_provider_view.virtualbox_provider_edit,
-        name="virtualbox_provider_edit"
-    ),
-    url(
         r"^vbox_img/list$",
         vbox_img_view.vbox_img_list,
         name="vbox_img_list"

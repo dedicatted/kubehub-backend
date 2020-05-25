@@ -36,22 +36,3 @@ def virtualbox_provider_add(request):
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
 
-
-@csrf_exempt
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def virtualbox_provider_edit(request):
-    if request.method == 'POST':
-        try:
-            data = loads(request.body)
-            vbox_provider_id = data.pop('id')
-            instance = VirtualBoxCloudProvider.objects.get(pk=vbox_provider_id)
-        except Exception as e:
-            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
-        cps = VirtualBoxCloudProviderSerializer(data=data, partial=True)
-        if cps.is_valid():
-            cp = cps.update(instance, cps.validated_data)
-            return JsonResponse(model_to_dict(cp))
-        else:
-            return JsonResponse({'errors': cps.errors})
-    return JsonResponse({'operation': 'edit'})
