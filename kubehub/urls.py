@@ -24,24 +24,24 @@ urlpatterns = [
         name="all_cloud_provider_list"
     ),
     url(
-        r"^list$",
+        r"^cloud-provider/list$",
         proxmox_cloud_provider_view.proxmox_cloud_provider_list,
         name="proxmox_cloud_provider_list"
     ),
     url(
-        r"^add$",
+        r"^cloud-provider/add$",
         proxmox_cloud_provider_view.proxmox_cloud_provider_add,
         name="proxmox_cloud_provider_add"
     ),
     url(
-        r"^remove$",
-        proxmox_cloud_provider_view.proxmox_cloud_provider_remove,
-        name="proxmox_cloud_provider_remove"
+        r"^cloud-provider/remove$",
+        cloud_provider_view.cloud_provider_remove,
+        name="cloud_provider_remove"
     ),
     url(
-        r"^edit$",
-        proxmox_cloud_provider_view.proxmox_cloud_provider_edit,
-        name="proxmox_cloud_provider_edit"
+        r"^cloud-provider/edit$",
+        cloud_provider_view.cloud_provider_edit,
+        name="cloud_provider_edit"
     ),
     url(
         r"^cluster/add$",

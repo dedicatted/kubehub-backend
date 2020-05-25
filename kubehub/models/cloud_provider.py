@@ -20,19 +20,14 @@ class CloudProvider(models.Model):
     name = models.CharField(
         max_length=name_max,
         unique=True,
-        null=True
     )
     api_endpoint = models.CharField(
         max_length=name_max,
-        unique=True,
-        default=None,
-        blank=True
+        unique=True
     )
     password = models.CharField(
         max_length=name_max,
-        unique=True,
-        default=None,
-        blank=True
+        unique=True
     )
     readonly_fields = ('cp_type', 'api_endpoint', 'password')
 

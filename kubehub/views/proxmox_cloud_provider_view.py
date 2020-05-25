@@ -39,22 +39,6 @@ def proxmox_cloud_provider_add(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @csrf_exempt
-def proxmox_cloud_provider_remove(request):
-    if request.method == 'POST':
-        try:
-            data = loads(request.body)
-            pk = data.pop('id')
-            instance = ProxmoxCloudProvider.objects.get(pk=pk)
-            instance.delete()
-            return JsonResponse({'deleted': model_to_dict(instance)})
-        except Exception as e:
-            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
-    return JsonResponse({'operation': 'remove'})
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-@csrf_exempt
 def proxmox_cloud_provider_edit(request):
     if request.method == 'POST':
         try:

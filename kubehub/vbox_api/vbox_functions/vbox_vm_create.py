@@ -18,7 +18,7 @@ from kubehub.vbox_api.vbox_functions.vbox_select_hdd_controller import select_hd
 def vbox_create_vm(data):
     vm_name = data.get('name')
     vbox_img_instance = VirtualBoxImage.objects.get(pk=data['image_id'])
-    vms_dir = get_machine_folder(cloud_provider_id=data['cloud_provider_id'])
+    vms_dir = get_machine_folder()
     image = vbox_img_instance.img_full_path
     config_file(image=image)
     disk_path = f'{vms_dir}/{vm_name}/{vm_name}_disk.vmdk'
