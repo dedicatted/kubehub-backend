@@ -6,18 +6,20 @@ from kubehub.vbox_api.models.vbox_cloud_provider import VirtualBoxCloudProvider
 class VirtualBoxCloudProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = VirtualBoxCloudProvider
-        fields = ('id', 'cp_type', 'name', 'api_endpoint', 'password', 'image_folder', 'machine_folder')
+        fields = ('id', 'cp_type', 'name', 'api_endpoint', 'password', 'image_folder')
 
     def create(self, validated_data):
-        if self.validated_data.get('api_endpoint'):
-            VirtualBoxCloudProvider.api_endpoint = self.validated_data.get('api_endpoint')
-        if self.validated_data.get('password'):
-            VirtualBoxCloudProvider.password = self.validated_data.get('password')
-        cloud_provider = VirtualBoxCloudProvider.objects.create(**validated_data)
-        return cloud_provider
+        vbox_cloud_provider = VirtualBoxCloudProvider.objects.create(**validated_data)
+        if self.validated_data.get('cp_type') == 'VirtualBox':
+            validated_data.update({
+                'password': None,
+                'api_endpoint': None
+            })
+        return vbox_cloud_provider
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
+        instance.image_folder = validated_data.get('image_folder', instance.image_folder)
         instance.save()
 
         return instance

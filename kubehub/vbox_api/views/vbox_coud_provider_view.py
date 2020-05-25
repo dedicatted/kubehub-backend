@@ -25,30 +25,16 @@ def virtualbox_provider_list(request):
 @permission_classes([IsAuthenticated])
 def virtualbox_provider_add(request):
     if request.method == 'POST':
-        data = loads(request.body)
-        cps = VirtualBoxCloudProviderSerializer(data=data)
-        if cps.is_valid():
-            cp = cps.create(cps.validated_data)
-            return JsonResponse(model_to_dict(cp))
-        else:
-            return JsonResponse({'errors': cps.errors})
-    return JsonResponse({'operation': 'add'})
-
-
-@csrf_exempt
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def virtualbox_provider_remove(request):
-    if request.method == 'POST':
         try:
             data = loads(request.body)
-            vbox_provider_id = data.pop('id')
-            instance = VirtualBoxCloudProvider.objects.get(pk=vbox_provider_id)
-            instance.delete()
-            return JsonResponse({'deleted': model_to_dict(instance)})
+            cps = VirtualBoxCloudProviderSerializer(data=data)
+            if cps.is_valid():
+                cp = cps.create(cps.validated_data)
+                return JsonResponse(model_to_dict(cp))
+            else:
+                return JsonResponse({'errors': cps.errors})
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
-    return JsonResponse({'operation': 'remove'})
 
 
 @csrf_exempt
