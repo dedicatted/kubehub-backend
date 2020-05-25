@@ -6,7 +6,7 @@ from kubehub.vbox_api.models.vbox_cloud_provider import VirtualBoxCloudProvider
 
 
 @csrf_exempt
-def cloud_provider_list(request):
+def all_cloud_provider_list(request):
     if request.method == 'GET':
         try:
             cp_list = list(VirtualBoxCloudProvider.objects.values()) + list(ProxmoxCloudProvider.objects.values())
