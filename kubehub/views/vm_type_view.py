@@ -10,6 +10,8 @@ from kubehub.serializers.vm_type_serializer import VmTypeSerializer
 
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def vm_type_list(request):
     if request.method == 'GET':
         try:
@@ -19,6 +21,8 @@ def vm_type_list(request):
 
 
 @csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def vm_type_add(request):
     if request.method == 'POST':
         try:
@@ -34,6 +38,8 @@ def vm_type_add(request):
 
 
 @csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def vm_type_edit(request):
     if request.method == 'POST':
         try:
