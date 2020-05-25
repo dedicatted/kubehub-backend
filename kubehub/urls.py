@@ -34,9 +34,9 @@ urlpatterns = [
         name="proxmox_cloud_provider_add"
     ),
     url(
-        r"^remove$",
-        proxmox_cloud_provider_view.proxmox_cloud_provider_remove,
-        name="proxmox_cloud_provider_remove"
+        r"^cloud-provider/remove$",
+        cloud_provider_view.cloud_provider_remove,
+        name="cloud_provider_remove"
     ),
     url(
         r"^edit$",
