@@ -46,12 +46,6 @@ def vm_type_edit(request):
             data = loads(request.body)
             pk = data.get('vm_type_id')
             instance = VmType.objects.get(pk=pk)
-            if instance.platform_type == 'VirtualBox':
-                data['vbox_image'] = data.get('vbox_image')
-            elif instance.platform_type == 'Proxmox_image_based':
-                data['proxmox_image'] = data.get('proxmox_image')
-            elif instance.platform_type == 'Proxmox_template_based':
-                data['proxmox_template'] = data.get('proxmox_template')
             cps = VmTypeSerializer(data=data, partial=True)
             if cps.is_valid():
                 cp = cps.update(instance, cps.validated_data)
