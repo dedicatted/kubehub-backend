@@ -14,8 +14,8 @@ from kubehub.proxmox.vm_from_template_set_memory import vm_from_template_set_mem
 
 
 def create_vm_from_template(data):
-    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
-    template_instance = Template.objects.get(pk=data['template_id'])
+    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider'])
+    template_instance = Template.objects.get(pk=data['template'])
     newid = data["vmid"]
     clone = vm_clone(
         host=cloud_provider_instance.api_endpoint,
@@ -119,8 +119,8 @@ def create_vm_from_template(data):
                             "name": data["name"],
                             "vmid": newid,
                             "ip": ip,
-                            "cloud_provider_id": cloud_provider_instance.id,
-                            "template_id": template_instance.id,
+                            "cloud_provider": cloud_provider_instance.id,
+                            "template": template_instance.id,
                             "cores": data["cores"],
                             'memory': data['memory'],
                             'boot_disk': data['boot_disk']

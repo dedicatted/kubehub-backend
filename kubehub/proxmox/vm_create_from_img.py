@@ -14,8 +14,8 @@ from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
 
 
 def create_vm_from_img(data):
-    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
-    os_image_instance = OsImage.objects.get(pk=data['os_image_id'])
+    cloud_provider_instance = ProxmoxCloudProvider.objects.get(pk=data['cloud_provider'])
+    os_image_instance = OsImage.objects.get(pk=data['os_image'])
     vmid = data["vmid"]
     node = get_vm_node(
         host=cloud_provider_instance.api_endpoint,
@@ -129,7 +129,7 @@ def create_vm_from_img(data):
                                 "name": data["name"],
                                 "vmid": vmid,
                                 "ip": ip,
-                                "cloud_provider_id": cloud_provider_instance.id,
+                                "cloud_provider": cloud_provider_instance.id,
                                 "cores": data["cores"],
                                 'memory': data['memory'],
                                 'boot_disk': data['boot_disk']

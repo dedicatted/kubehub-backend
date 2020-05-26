@@ -37,12 +37,20 @@ class VM(models.Model):
         choices=BOOT_DISK_CHOICES,
         default=32
     )
+    NODE_TYPE_CHOICES = (
+        ('master', 'master'),
+        ('worker', 'worker')
+    )
+    node_type = models.CharField(
+        max_length=name_max,
+        choices=NODE_TYPE_CHOICES
+    )
 
-    readonly_fields = ('name', 'ip', 'cores', 'memory', 'boot_disk', 'vm_group_id')
+    readonly_fields = ('name', 'ip', 'cores', 'memory', 'boot_disk', 'vm_group_id', 'node_type')
 
     def __str__(self):
         return f'id: {self.id}, name: {self.name}, ip: {self.ip}, cores: {self.cores}, memory: {self.memory},' \
-               f'boot_disk: {self.boot_disk},'
+               f'boot_disk: {self.boot_disk}, node_type {self.node_type}, '
 
 
 
