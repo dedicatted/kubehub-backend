@@ -1,7 +1,13 @@
 from django.db import models
+from subprocess import check_output
 
 
 class VmType(models.Model):
+    name_max = int(check_output('getconf NAME_MAX /', shell=True))
+    name = models.CharField(
+        max_length=name_max,
+        unique=True
+    )
     CORES_CHOICES = (
         (1, 1),
         (2, 2),
