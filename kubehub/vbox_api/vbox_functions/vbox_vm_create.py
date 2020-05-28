@@ -14,13 +14,16 @@ from kubehub.vbox_api.vbox_functions.vbox_get_machine_folder import get_machine_
 from kubehub.vbox_api.vbox_functions.vbox_set_number_of_cpus import set_number_of_cpus
 from kubehub.vbox_api.vbox_functions.vbox_select_hdd_controller import select_hdd_controller
 
+from os import system
+
+
 
 def vbox_create_vm(data):
     vm_name = data.get('name')
-    vbox_img_instance = VirtualBoxImage.objects.get(pk=data['image_id'])
+    vbox_img_instance = VirtualBoxImage.objects.get(pk=data['vbox_os_image'])
     vms_dir = get_machine_folder()
     image = vbox_img_instance.img_full_path
-    config_file(image=image)
+    # config_file(image=image)
     disk_path = f'{vms_dir}/{vm_name}/{vm_name}_disk.vmdk'
     create_vm(
         name=vm_name,
@@ -37,6 +40,9 @@ def vbox_create_vm(data):
         controller='IntelAhci'
     )
     clone_disk(image_path=image, new_disk_path=disk_path)
+
+    system(f"VBoxManage closemedium {image}")
+
     attach_hdd(
         name=vm_name,
         storagectl='SATA Controller',
@@ -46,7 +52,7 @@ def vbox_create_vm(data):
     set_bootdisk(name=vm_name, boot1='disk', boot2='none', boot3='none', boot4='none')
     set_vrde(name=vm_name, status='on')
     set_vrde_port(name=vm_name, vrdemulticon_status='on', vrdeport=10001)
-    start_vm(vm_name=vm_name, start_mode='headless')
+    # start_vm(vm_name=vm_name, start_mode='headless')
     return {
         'name': data['name'],
         'cores': data['cores'],

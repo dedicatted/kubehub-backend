@@ -38,27 +38,36 @@ def vbox_vmg_list(request):
 def vbox_vmg_add(request):
     if request.method == 'POST':
         try:
-            vbox_pkill()
             data = loads(request.body)
+            master_data = data.get("master")
+            master_data.update({
+                'name': data.get('name'),
+                'vmid': '0',
+                'ip': 'creating',
+                'node_type': 'master'
+            })
+            worker_data = data.get("worker")
+            worker_data.update({
+                'name': data.get('name'),
+                'vmid': '0',
+                'ip': 'creating',
+                'node_type': 'worker'
+            })
+            masters = [master_data.copy() for _ in range(int(master_data.get("number_of_nodes")))]
+            workers = [worker_data.copy() for _ in range(int(worker_data.get("number_of_nodes")))]
             virtual_machine_group = {
                 'name': data['name'],
                 'user_id': '1',
                 'status': 'creating',
                 'cloud_provider': data['cloud_provider_id'],
-                'vbox_vms': [{
-                    'name': data['name'],
-                    'ip': 'creating',
-                    'cores': data['cores'],
-                    'memory': data['memory'],
-                    'vbox_os_image': data['image_id']
-                } for _ in range(int(data['number_of_nodes']))]
+                'vbox_vms': masters + workers
             }
             vmgs = VboxVmGroupSerializer(data=virtual_machine_group)
             if vmgs.is_valid():
                 created_group = vmgs.create(vmgs.validated_data)
                 pk = created_group.id
                 try:
-                    vmg_list = create_vm_group(data)
+                    vmg_list = create_vm_group(virtual_machine_group)
                     vbox_vms_update(
                         pk=pk,
                         vms=vmg_list
@@ -78,7 +87,7 @@ def vbox_vmg_add(request):
                 return JsonResponse({'errors': vmgs.errors})
         except Exception as e:
             return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
-
+        
 
 def vbox_vms_update(pk, vms):
     vms_instance = VirtualBoxVm.objects.filter(vm_group__id=pk)
