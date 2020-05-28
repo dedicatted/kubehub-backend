@@ -30,14 +30,12 @@ def vbox_img_add(request):
         data = loads(request.body)
         cloud_provider_instance = VirtualBoxCloudProvider.objects.get(pk=data['cloud_provider_id'])
         vbox_images = get_images(path=cloud_provider_instance.image_folder)
-        print(vbox_images)
         for img_path in vbox_images:
             path, filename = split(img_path)
             vbox_img_data = {
-                'img_name': filename,
+                'name': filename,
                 'img_full_path': f'{path}/\'{filename}\'',
             }
-            print(vbox_img_data)
             vbox_imgs = VirtualBoxImageSerializer(data=vbox_img_data)
             if vbox_imgs.is_valid():
                 vbox_imgs.create(vbox_imgs.validated_data)

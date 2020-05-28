@@ -91,88 +91,103 @@ def get_vm_group_status(request):
 @csrf_exempt
 def vm_group_add(request):
     if request.method == 'POST':
-        try:
-            data = loads(request.body)
-            if 'template_id' not in data:
-                virtual_machine_group = {
-                    'name': data['name'],
-                    'user_id': '1',
-                    'status': 'creating',
-                    'cloud_provider': data['cloud_provider_id'],
-                    'image_vms': [{
-                        'name': data['name'],
-                        'vmid': '0',
-                        'ip': 'creating',
-                        'cores': data['cores'],
-                        'memory': data['memory'],
-                        'boot_disk': data['boot_disk'],
-                        'os_image': data['os_image_id']
-                    } for _ in range(int(data['number_of_nodes']))]
-                }
-                vmgs = VmGroupFromImageSerializer(data=virtual_machine_group)
-                if vmgs.is_valid():
-                    created_group = vmgs.create(vmgs.validated_data)
-                    pk = created_group.id
-                    try:
-                        vmg_list = create_vm_group_from_img(data)
-                        image_based_vms_update(
-                            pk=pk,
-                            vms=vmg_list
-                        )
-                        vmg = image_based_vm_status_update(
-                            pk=pk,
-                            status='running'
-                        )
-                        return JsonResponse({'data': vmg})
-                    except Exception as e:
-                        image_based_vm_status_update(
-                            pk=pk,
-                            status='error'
-                        )
-                        return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
-                else:
-                    return JsonResponse({'errors': vmgs.errors})
+        data = loads(request.body)
+        if 'template' not in data.get("master"):
+            master_data = data.get("master")
+            master_data.update({
+                'name': data.get('name'),
+                'vmid': '0',
+                'ip': 'creating',
+                'node_type': 'master'
+            })
+            worker_data = data.get("worker")
+            worker_data.update({
+                'name': data.get('name'),
+                'vmid': '0',
+                'ip': 'creating',
+                'node_type': 'worker'
+            })
+            masters = [master_data.copy() for _ in range(int(master_data.get("number_of_nodes")))]
+            workers = [worker_data.copy() for _ in range(int(worker_data.get("number_of_nodes")))]
+            virtual_machine_group = {
+                'name': data['name'],
+                'user_id': '1',
+                'status': 'creating',
+                'cloud_provider': data['cloud_provider_id'],
+                'image_vms': masters + workers
+            }
+            vmgs = VmGroupFromImageSerializer(data=virtual_machine_group)
+            if vmgs.is_valid():
+                created_group = vmgs.create(vmgs.validated_data)
+                pk = created_group.id
+                try:
+                    vmg_list = create_vm_group_from_img(virtual_machine_group)
+                    image_based_vms_update(
+                        pk=pk,
+                        vms=vmg_list
+                    )
+                    vmg = image_based_vm_status_update(
+                        pk=pk,
+                        status='running'
+                    )
+                    return JsonResponse({'data': vmg})
+                except Exception as e:
+                    image_based_vm_status_update(
+                        pk=pk,
+                        status='error'
+                    )
+                    return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
             else:
-                virtual_machine_group = {
-                    'name': data['name'],
-                    'user_id': '1',
-                    'status': 'creating',
-                    'cloud_provider': data['cloud_provider_id'],
-                    'template_vms': [{
-                        'name': 'creating',
-                        'vmid': '0',
-                        'ip': 'creating',
-                        'cores': data['cores'],
-                        'memory': data['memory'],
-                        'boot_disk': data['boot_disk'],
-                        'template': data['template_id'],
-                    } for _ in range(int(data['number_of_nodes']))]
-                }
-                vmgs = VmGroupFromTemplateSerializer(data=virtual_machine_group)
-                if vmgs.is_valid():
-                    created_group = vmgs.create(vmgs.validated_data)
-                    pk = created_group.id
-                    try:
-                        vmg_list = create_vm_group_from_template(data)
-                        template_based_vms_update(
-                            pk=pk,
-                            vms=vmg_list
-                        )
-                        vmg = template_based_vm_status_update(
-                            pk=pk,
-                            status='running'
-                        )
-                        return JsonResponse({'data': vmg})
-                    except Exception as e:
-                        template_based_vm_status_update(
-                            pk=pk,
-                            status='error'
-                        )
-                        return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
-                else:
-                    return JsonResponse({'errors': vmgs.errors})
-        except Exception as e:
-            return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+                return JsonResponse({'errors': vmgs.errors})
+        else:
+            master_data = data.get("master")
+            master_data.update({
+                'name': data.get('name'),
+                'vmid': '0',
+                'ip': 'creating',
+                'node_type': 'master'
+            })
+            worker_data = data.get("worker")
+            worker_data.update({
+                'name': data.get('name'),
+                'vmid': '0',
+                'ip': 'creating',
+                'node_type': 'worker'
+            })
+            masters = [master_data.copy() for _ in range(int(master_data.get("number_of_nodes")))]
+            workers = [worker_data.copy() for _ in range(int(worker_data.get("number_of_nodes")))]
+            virtual_machine_group = {
+                'name': data['name'],
+                'user_id': '1',
+                'status': 'creating',
+                'cloud_provider': data['cloud_provider_id'],
+                'template_vms': masters + workers
+            }
+            vmgs = VmGroupFromTemplateSerializer(data=virtual_machine_group)
+            if vmgs.is_valid():
+                print('\n\nis_valid')
+                created_group = vmgs.create(vmgs.validated_data)
+                print('\n\ncreated_group', created_group)
+                pk = created_group.id
+                try:
+                    vmg_list = create_vm_group_from_template(virtual_machine_group)
+                    template_based_vms_update(
+                        pk=pk,
+                        vms=vmg_list
+                    )
+                    vmg = template_based_vm_status_update(
+                        pk=pk,
+                        status='running'
+                    )
+                    return JsonResponse({'data': vmg})
+                except Exception as e:
+                    template_based_vm_status_update(
+                        pk=pk,
+                        status='error'
+                    )
+                    return JsonResponse({'errors': {f'{type(e).__name__}': [str(e)]}})
+            else:
+                return JsonResponse({'errors': vmgs.errors})
 
 
 def image_based_vms_update(pk, vms):

@@ -4,7 +4,7 @@ from subprocess import check_output
 
 class VirtualBoxImage(models.Model):
     name_max = int(check_output('getconf NAME_MAX /', shell=True))
-    img_name = models.CharField(
+    name = models.CharField(
         max_length=name_max,
     )
     img_full_path = models.CharField(
@@ -15,4 +15,4 @@ class VirtualBoxImage(models.Model):
     readonly_fields = ('img_name', 'img_full_path')
 
     def __str__(self):
-        return f'id: {self.id}, img_name: {self.img_name}, img_full_path: {self.img_full_path} '
+        return f'id: {self.id}, img_name: {self.name}, img_full_path: {self.img_full_path} '
