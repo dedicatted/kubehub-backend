@@ -5,7 +5,7 @@ from subprocess import check_output
 class KubernetesVersion(models.Model):
     name_max = int(check_output('getconf NAME_MAX /', shell=True))
     VERSIONS = (
-        ('v1.14.9', 'v1.14.9'),
+        ('v1.14.6', 'v1.14.6'),
         ('v1.15.3', 'v1.15.3'),
         ('v1.15.8', 'v1.15.8'),
         ('v1.15.11', 'v1.15.11'),

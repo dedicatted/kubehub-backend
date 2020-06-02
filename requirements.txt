@@ -3,14 +3,6 @@ djangorestframework==3.11.0
 django-cors-headers==3.2.1
 proxmoxer==1.0.4
 requests==2.22.0
-ansible==2.7.16
-jinja2==2.10.1
-netaddr==0.7.19
-pbr==5.2.0
-hvac==0.8.2
-jmespath==0.9.4
-ruamel.yaml==0.15.96
 python-dotenv==0.12.0
 GitPython==3.1.0
-# djangorestframework-jwt==1.11.0
 djangorestframework-simplejwt==4.4.0

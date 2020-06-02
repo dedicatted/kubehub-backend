@@ -107,24 +107,6 @@ def create_vm_from_img(data):
                                     vmid=vmid),
                                 vmid=vmid
                             )
-                            vm_update(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                node=get_vm_node(
-                                    host=cloud_provider_instance.api_endpoint,
-                                    password=cloud_provider_instance.password,
-                                    vmid=vmid),
-                                vmid=vmid
-                            )
-                            vm_upgrade(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                node=get_vm_node(
-                                    host=cloud_provider_instance.api_endpoint,
-                                    password=cloud_provider_instance.password,
-                                    vmid=vmid),
-                                vmid=vmid
-                            )
                             return {
                                 "name": data["name"],
                                 "vmid": vmid,
