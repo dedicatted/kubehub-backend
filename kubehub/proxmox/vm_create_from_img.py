@@ -11,6 +11,8 @@ from ..proxmox.vm_disk_resize import resize_disk
 from ..proxmox.vm_create_set_up import vm_create_set_up
 from ..proxmox.vm_from_img_config import vm_from_img_config
 from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
+from os import system
+
 
 
 def create_vm_from_img(data):
@@ -100,24 +102,6 @@ def create_vm_from_img(data):
                         if status == 'running':
                             ip = get_vm_ip(
                                 proxmox_ip=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                node=get_vm_node(
-                                    host=cloud_provider_instance.api_endpoint,
-                                    password=cloud_provider_instance.password,
-                                    vmid=vmid),
-                                vmid=vmid
-                            )
-                            vm_update(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                node=get_vm_node(
-                                    host=cloud_provider_instance.api_endpoint,
-                                    password=cloud_provider_instance.password,
-                                    vmid=vmid),
-                                vmid=vmid
-                            )
-                            vm_upgrade(
-                                host=cloud_provider_instance.api_endpoint,
                                 password=cloud_provider_instance.password,
                                 node=get_vm_node(
                                     host=cloud_provider_instance.api_endpoint,
