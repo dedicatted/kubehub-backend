@@ -165,9 +165,7 @@ def vm_group_add(request):
             }
             vmgs = VmGroupFromTemplateSerializer(data=virtual_machine_group)
             if vmgs.is_valid():
-                print('\n\nis_valid')
                 created_group = vmgs.create(vmgs.validated_data)
-                print('\n\ncreated_group', created_group)
                 pk = created_group.id
                 try:
                     vmg_list = create_vm_group_from_template(virtual_machine_group)
