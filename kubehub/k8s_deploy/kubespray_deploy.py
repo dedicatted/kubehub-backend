@@ -2,7 +2,9 @@ from re import findall
 from subprocess import Popen
 from django.forms.models import model_to_dict
 
+from kubehub.models.proxmox_vm_group import ProxmoxVmGroup
 from ..models.vm_from_img import VmFromImage
+from kubehub.models.vm_from_template import VmFromTemplate
 from ..models.k8s_cluster import KubernetesCluster
 from ..models.kubespray_deploy import KubesprayDeploy
 from ..k8s_deploy.deploy_log_file_create import create_log_file
@@ -15,10 +17,25 @@ from ..serializers.kubespray_deploy_serializer import KubesprayDeploySerializer
 def kubespray_deploy(k8s_cluster_id):
     log_dir = create_deploy_logs_dir()
     k8s_cluster_id = KubernetesCluster.objects.get(id=k8s_cluster_id).id
+    print('\n\n\nk8s_cluster_id', k8s_cluster_id)
     vm_group_id = KubernetesCluster.objects.get(id=k8s_cluster_id).vm_group.id
+    print('\n\n\n\nvm_group_id', vm_group_id)
     kubernetes_version = KubernetesCluster.objects.get(id=k8s_cluster_id).kubernetes_version_id.version
-    vm_group__instance = VmFromImage.objects.filter(vm_group=vm_group_id).values_list('ip', flat=True)
+
+    vm_group = ProxmoxVmGroup.objects.get(pk=vm_group_id)
+    template_based_vm_list = VmFromTemplate.objects.filter(vm_group=vm_group)
+    image_based_vm_list = VmFromImage.objects.filter(vm_group=vm_group)
+    vm_list = list(template_based_vm_list) + list(image_based_vm_list)
+    group = [model_to_dict(vm) for vm in vm_list][0]
+
+    if 'template' in group:
+        vm_group__instance = VmFromTemplate.objects.filter(vm_group=vm_group_id).values_list('ip', flat=True)
+    else:
+        vm_group__instance = VmFromImage.objects.filter(vm_group=vm_group_id).values_list('ip', flat=True)
+
+    print('\n\n\nvm_group__instance', vm_group__instance)
     vms_ip = list(vm_group__instance)
+    print('\n\n\n\nvms_ip', vms_ip)
     nomber_of_node = len(vms_ip) + 1
     virtual_machine_ip = (" ".join(vms_ip))
     kubespray_deploy_dir = ansible_deploy_config(
