@@ -11,6 +11,8 @@ from ..proxmox.vm_disk_resize import resize_disk
 from ..proxmox.vm_create_set_up import vm_create_set_up
 from ..proxmox.vm_from_img_config import vm_from_img_config
 from ..models.proxmox_cloud_provider import ProxmoxCloudProvider
+from os import system
+
 
 
 def create_vm_from_img(data):

@@ -46,7 +46,6 @@ def restart_kubespray_deploy(request):
             f'--become --become-user=root '
             f'{kubespray_deploy_dir}/cluster.yml'
         )
-        print(cmd)
         kubespray_deploy_data = {
             'status': 'deploying',
             'vm_group': vm_group_id,

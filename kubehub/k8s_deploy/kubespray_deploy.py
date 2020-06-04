@@ -30,6 +30,8 @@ def kubespray_deploy(k8s_cluster_id):
         f'ANSIBLE_HOST_KEY_CHECKING=False '
         f'ansible-playbook -i '
         f'{kubespray_deploy_dir}/inventory/mycluster/hosts.yml '
+        f'--flush-cache '
+        f'--user=ubuntu '
         f'--extra-vars "ansible_user=ubuntu ansible_password=ubuntu" '
         f'--become --become-user=root '
         f'{kubespray_deploy_dir}/cluster.yml'
