@@ -32,7 +32,7 @@ def create_vm_from_template(data):
 
     )
     if clone:
-        set_cores = vm_from_template_set_cores(
+        vm_from_template_set_cores(
             host=cloud_provider_instance.api_endpoint,
             password=cloud_provider_instance.password,
             node=get_vm_node(
@@ -43,86 +43,65 @@ def create_vm_from_template(data):
             cores=data['cores'],
             vmid=newid
         )
-        if set_cores:
-            set_memory = vm_from_template_set_memory(
+        vm_from_template_set_memory(
+            host=cloud_provider_instance.api_endpoint,
+            password=cloud_provider_instance.password,
+            node=get_vm_node(
                 host=cloud_provider_instance.api_endpoint,
+                password=cloud_provider_instance.password,
+                vmid=newid
+            ),
+            memory=data['memory'],
+            vmid=newid
+        )
+        resize_disk(
+            host=cloud_provider_instance.api_endpoint,
+            password=cloud_provider_instance.password,
+            node=get_vm_node(
+                host=cloud_provider_instance.api_endpoint,
+                password=cloud_provider_instance.password,
+                vmid=newid
+            ),
+            vmid=newid,
+            disk='virtio0',
+            size=data['boot_disk']
+        )
+        vm_start(
+            host=cloud_provider_instance.api_endpoint,
+            password=cloud_provider_instance.password,
+            node=get_vm_node(
+                host=cloud_provider_instance.api_endpoint,
+                password=cloud_provider_instance.password,
+                vmid=newid),
+            vmid=newid
+        )
+        status = vm_status(
+            host=cloud_provider_instance.api_endpoint,
+            password=cloud_provider_instance.password,
+            node=get_vm_node(
+                host=cloud_provider_instance.api_endpoint,
+                password=cloud_provider_instance.password,
+                vmid=newid),
+            vmid=newid
+        )
+        if status == "running":
+            ip = get_vm_ip(
+                proxmox_ip=cloud_provider_instance.api_endpoint,
                 password=cloud_provider_instance.password,
                 node=get_vm_node(
                     host=cloud_provider_instance.api_endpoint,
                     password=cloud_provider_instance.password,
-                    vmid=newid
-                ),
-                memory=data['memory'],
+                    vmid=newid),
                 vmid=newid
             )
-            if set_memory:
-                set_boot_disk = resize_disk(
-                    host=cloud_provider_instance.api_endpoint,
-                    password=cloud_provider_instance.password,
-                    node=get_vm_node(
-                        host=cloud_provider_instance.api_endpoint,
-                        password=cloud_provider_instance.password,
-                        vmid=newid
-                    ),
-                    vmid=newid,
-                    disk='virtio0',
-                    size=data['boot_disk']
-                )
-                if set_boot_disk:
-                    vm_start(
-                        host=cloud_provider_instance.api_endpoint,
-                        password=cloud_provider_instance.password,
-                        node=get_vm_node(
-                            host=cloud_provider_instance.api_endpoint,
-                            password=cloud_provider_instance.password,
-                            vmid=newid),
-                        vmid=newid
-                    )
-                    status = vm_status(
-                        host=cloud_provider_instance.api_endpoint,
-                        password=cloud_provider_instance.password,
-                        node=get_vm_node(
-                            host=cloud_provider_instance.api_endpoint,
-                            password=cloud_provider_instance.password,
-                            vmid=newid),
-                        vmid=newid
-                    )
-                    if status == "running":
-                        ip = get_vm_ip(
-                            proxmox_ip=cloud_provider_instance.api_endpoint,
-                            password=cloud_provider_instance.password,
-                            node=get_vm_node(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                vmid=newid),
-                            vmid=newid
-                        )
-                        vm_update(
-                            host=cloud_provider_instance.api_endpoint,
-                            password=cloud_provider_instance.password,
-                            node=get_vm_node(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                vmid=newid),
-                            vmid=newid
-                        )
-                        vm_upgrade(
-                            host=cloud_provider_instance.api_endpoint,
-                            password=cloud_provider_instance.password,
-                            node=get_vm_node(
-                                host=cloud_provider_instance.api_endpoint,
-                                password=cloud_provider_instance.password,
-                                vmid=newid),
-                            vmid=newid
-                        )
-                        return {
-                            "name": data["name"],
-                            "vmid": newid,
-                            "ip": ip,
-                            "cloud_provider": cloud_provider_instance.id,
-                            "template": template_instance.id,
-                            "cores": data["cores"],
-                            'memory': data['memory'],
-                            'boot_disk': data['boot_disk']
-                        }
+            return {
+                "name": data["name"],
+                "vmid": newid,
+                "ip": ip,
+                "cloud_provider": cloud_provider_instance.id,
+                "template": template_instance.id,
+                "cores": data["cores"],
+                'memory': data['memory'],
+                'boot_disk': data['boot_disk']
+            }
 
