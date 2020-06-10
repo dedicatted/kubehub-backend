@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
 from kubehub.models.vm_from_img import VmFromImage
+from kubehub.vbox_api.models.vbox_vm import VirtualBoxVm
 from kubehub.models.vm_from_template import VmFromTemplate
 from kubehub.models.proxmox_vm_group import ProxmoxVmGroup
 from kubehub.proxmox.vm_group_delete import vm_group_delete
@@ -27,7 +28,8 @@ def vm_group_list(request):
             for vm_group in ProxmoxVmGroup.objects.all():
                 template_based_vm_list = VmFromTemplate.objects.filter(vm_group=vm_group)
                 image_based_vm_list = VmFromImage.objects.filter(vm_group=vm_group)
-                vm_list = list(template_based_vm_list) + list(image_based_vm_list)
+                vbox_vm_list = VirtualBoxVm.objects.filter(vm_group=vm_group)
+                vm_list = list(template_based_vm_list) + list(image_based_vm_list) + list(vbox_vm_list)
                 vmg_dict = model_to_dict(vm_group)
                 vmg_dict['vms'] = [model_to_dict(vm) for vm in vm_list]
                 vm_groups.append(vmg_dict)
